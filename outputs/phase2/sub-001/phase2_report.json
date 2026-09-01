@@ -1,0 +1,30 @@
+{
+  "phase": "2",
+  "subject": "sub-001",
+  "source_path": "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-001/ses-01/VEPhypothesis/sub-001_simulated_source_timeseries_run-01.npz",
+  "first_recruited": [
+    "Left-Orbito-frontal-cortex",
+    "Left-F3-Pars-Orbitalis",
+    "Left-Inferior-frontal-sulcus",
+    "Left-F3-pars-opercularis",
+    "Left-F2-rostral",
+    "Left-SFS-caudal",
+    "Left-SFS-rostral",
+    "Left-F2-caudal",
+    "Left-Parietal-operculum",
+    "Left-Posterior-cingulate-cortex-retrosplenial-gyrus"
+  ],
+  "EZ": [
+    "Right-Hippocampus-posterior",
+    "Right-Hippocampus-anterior",
+    "Right-Amygdala"
+  ],
+  "EZ_recruitment_ranks": {
+    "Right-Hippocampus-anterior": 109,
+    "Right-Hippocampus-posterior": 125,
+    "Right-Amygdala": 116
+  },
+  "G2A_feature_extraction": "PASS",
+  "G2B_dataset_EZ_early_recruitment_sanity": "FAIL",
+  "G2C_replay_propagation": "NOT TESTED: replay equivalence not fully verified"
+}

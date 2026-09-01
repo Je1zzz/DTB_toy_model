@@ -1,0 +1,44 @@
+{
+  "phase": "1B-long",
+  "duration": 4500.0,
+  "no_clipping": true,
+  "cases": [
+    {
+      "case": "deterministic",
+      "status": "PASS",
+      "dt": 0.05,
+      "last": {
+        "time": 4500.0,
+        "state_min": -17.783364038751852,
+        "state_max": 3.8604874135330647,
+        "max_abs": 17.783364038751852
+      }
+    },
+    {
+      "case": "reference_noise",
+      "status": "PASS",
+      "dt": 0.05,
+      "last": {
+        "time": 4500.0,
+        "state_min": -17.54331140640932,
+        "state_max": 3.923150091516312,
+        "max_abs": 17.54331140640932
+      }
+    },
+    {
+      "case": "half_dt_diagnostic",
+      "status": "PASS",
+      "dt": 0.025,
+      "last": {
+        "time": 4500.0,
+        "state_min": -17.619107725008405,
+        "state_max": 3.9451375678241463,
+        "max_abs": 17.619107725008405
+      }
+    }
+  ],
+  "G1B_LONG": "PASS",
+  "mechanistic_replay": "NOT FULLY VERIFIED",
+  "reason": "generation-era TVB version and original RNG state unavailable; colored-noise compatibility is not point-wise reference-verified",
+  "old_overflow_root_cause": "ROOT CAUSE NOT PROVEN; reference-semantics mismatch is demonstrated"
+}

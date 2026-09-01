@@ -1,0 +1,11 @@
+{
+  "phase": "1B",
+  "subject": "sub-001",
+  "source": "x2-x1",
+  "dt": 0.05,
+  "period": 1.0,
+  "noise": "colored additive ntau=1 seed=0 (not original seed)",
+  "finite": true,
+  "duration": 10.0,
+  "diagnostics": []
+}

@@ -1,0 +1,10 @@
+model: exact fixed-tau reference Stan
+n_optimize: 50
+n_best: 8
+n_chains_per_init: 2
+num_warmup: 500
+num_samples: 500
+adapt_delta: 0.99
+max_depth: 7
+seed: 12345
+truth_in_manifest: false

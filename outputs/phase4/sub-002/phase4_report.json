@@ -1,0 +1,11 @@
+{
+  "phase": "4",
+  "subject": "sub-002",
+  "target": "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/sub-002_simulated_source_timeseries_run-01.npz",
+  "compared_samples": 2800,
+  "descriptive_spatiotemporal_pearson": 0.16164440347011721,
+  "pearson_interpretation": "descriptive only; original RNG/TVB version unavailable",
+  "G4A_target_and_prediction_finite": "PASS",
+  "G4B_feature_comparison": "PARTIAL: source Pearson only",
+  "G4C_true_vs_control_null": "NOT TESTED: full permuted-location null not run"
+}

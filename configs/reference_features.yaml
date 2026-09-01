@@ -1,0 +1,11 @@
+source_file: virtual_epilepsy_patient_cohort/src/utils.py
+source_commit: a99c88354015f4c961d49a92c076ed0b675c740b
+functions:
+  - compute_slp_sim
+  - compute_onset
+  - compute_offset
+high_pass_hz: 10.0
+log_power_window_samples: 100
+low_pass_hz: 1.0
+onset_fraction_of_peak: 0.1
+constants_frozen_before_phase7_truth_unlock: true

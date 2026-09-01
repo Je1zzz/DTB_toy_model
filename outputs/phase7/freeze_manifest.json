@@ -1,0 +1,14 @@
+{
+  "subjects": 30,
+  "manifest_sha256": "6857c56f65f958fe6e4f5f93ab47a3eb27478f058b8a04c7ffee95f656fd2a81",
+  "config_sha256": "00e3ac3e89fa0fc386165ff8a7582f42923fc52dd3738fe2dd98e75e59e5e759",
+  "config_yaml_sha256": "0082b04a311ea99f1c24335697a4d045fbda66b3b3ab64d0c2ce4e37714d3418",
+  "baseline_git": "not initialized",
+  "baseline_code_tree_sha256": "6460e55618d9499a4864f44f89ca44e95cdd17f7fbb7241fe2f29e560bb6b14a",
+  "reference_repo_sha": "5367ef4afb976271ecc6297b70a95dd3d944af61",
+  "vep_generator_sha": "a99c88354015f4c961d49a92c076ed0b675c740b",
+  "stan_binary": "/data_hdd/hmzhang/vbt_runtime/vbt_stan_prebuilt/5367ef4afb976271ecc6297b70a95dd3d944af61/vep_mcmc",
+  "stan_binary_sha256": "00ff70aa8ede745afc5f8c64059aec7dc889d17dfda5aae414ad81b126f66662",
+  "python": "3.11.16",
+  "numpy": "2.4.6"
+}

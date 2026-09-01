@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+
+# Generated run artifacts - do not commit (sampling chains, data, logs, plots)
+outputs/**/*.csv
+outputs/**/*.R
+outputs/**/*.log
+outputs/**/*.npz
+outputs/**/*.npy
+outputs/**/*.png
+outputs/*.json

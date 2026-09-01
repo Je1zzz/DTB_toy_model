@@ -1,0 +1,5 @@
+root: /home/hmzhang/remote/public_data/VEP_Cohort_v2.0
+subject_id: sub-001
+hypothesis: VEPhypothesis
+session: ses-01
+duration: 100.0

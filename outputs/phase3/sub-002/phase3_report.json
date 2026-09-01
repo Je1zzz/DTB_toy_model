@@ -1,0 +1,21 @@
+{
+  "phase": "3",
+  "subject": "sub-002",
+  "recording": "VEPhypothesis run-01",
+  "channel": [
+    "B'1-2"
+  ],
+  "description": "B'1 -> [+] B'2 -> [-] Impulsions biphasiques : 50Hz | 2mA | Duree : 5s",
+  "amplitude": 2.0,
+  "period_samples": 8.0,
+  "pulse_width": 1.0,
+  "charge_per_period": 0.0,
+  "m_crossings": 703,
+  "true_zero_l2": 27.603500083048008,
+  "reference_code_inconsistency": "generator cvar=[0], while numba kernel reads c_pop[0:3]; compatibility uses the sole x1 Difference component",
+  "G3A": "PASS: parameter round-trip; equation equivalence NOT FULLY VERIFIED",
+  "G3B": "PASS",
+  "G3C": "PASS: saved weights used",
+  "G3D": "PASS",
+  "G3E": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+  "auroc": 0.8197064989517819,
+  "average_precision": 0.07695951765719207,
+  "prevalence": 0.018518518518518517,
+  "first_ez_rank": 9,
+  "mean_ez_rank": 30.666666666666668,
+  "oracle_k_recall": 0.0,
+  "auroc_p": 0.025974025974025976,
+  "auroc_null_p95": 0.779979035639413,
+  "phase": "6",
+  "subject": "sub-001",
+  "G6A": "PASS",
+  "G6B": "METRIC-SANITY PASS, INFERENCE-VALIDITY NOT PASS",
+  "scientific_EZN_inference": "NOT VALIDATED: Phase 5 posterior convergence failed"
+}

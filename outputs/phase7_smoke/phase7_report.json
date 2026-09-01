@@ -1,0 +1,33 @@
+{
+  "mode": "ENGINEERING_SMOKE_ONLY",
+  "frozen_primary_config_executed": false,
+  "subjects_attempted": 30,
+  "subjects_completed": 30,
+  "usable_inference": 0,
+  "mean_AUROC": 0.4356339830676361,
+  "AUROC_95CI": [
+    0.33534641562347817,
+    0.5394699761790198
+  ],
+  "median_AUROC": 0.35091445852534564,
+  "IQR_AUROC": [
+    0.1783393888623722,
+    0.6571117561683599
+  ],
+  "mean_AP": 0.15491835178606755,
+  "mean_prevalence": 0.03744855967078183,
+  "mean_AP_minus_prevalence": 0.11746979211528569,
+  "AP_delta_95CI": [
+    0.052470926081314734,
+    0.19494742271626714
+  ],
+  "above_chance_p": 0.8829117088291171,
+  "engineering_gate": "PASS",
+  "convergence_gate": "NOT ASSESSED FROM SMOKE",
+  "scientific_EZN_gate": "NOT ASSESSED FROM SMOKE",
+  "legacy_adaptive_tau": {
+    "mean_AUROC": 0.57,
+    "clear_MAP_convergence": "9/30",
+    "status": "NOT PASS"
+  }
+}

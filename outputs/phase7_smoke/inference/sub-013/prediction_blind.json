@@ -1,0 +1,20 @@
+{
+  "subject": "sub-013",
+  "created_before_ground_truth_load": true,
+  "EZN_rule": "rank by posterior mean x0; larger is more epileptogenic",
+  "top_10_roi_names": [
+    "Right-Posterior-cingulate-cortex-dorsal",
+    "Right-O2",
+    "Right-Hippocampus-posterior",
+    "Right-T1-lateral-posterior",
+    "Left-O1",
+    "Left-Angular-gyrus",
+    "Left-Cuneus",
+    "Right-O3",
+    "Left-Rhinal-cortex",
+    "Left-Anterior-occipital-sulcus-and-preoccipital-notch"
+  ],
+  "n_total_draws": 10,
+  "model_binary": "/data_hdd/hmzhang/vbt_runtime/vbt_stan_prebuilt/5367ef4afb976271ecc6297b70a95dd3d944af61/vep_mcmc",
+  "model_binary_sha256": "00ff70aa8ede745afc5f8c64059aec7dc889d17dfda5aae414ad81b126f66662"
+}

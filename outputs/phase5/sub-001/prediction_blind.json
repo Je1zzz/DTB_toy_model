@@ -1,0 +1,21 @@
+{
+  "subject": "sub-001",
+  "created_before_ground_truth_load": true,
+  "EZN_rule": "posterior_probability(x0 > -2.5) >= 0.5",
+  "top_10_roi_names": [
+    "Right-T1-planum-temporale",
+    "Right-Anterior-occipital-sulcus-and-preoccipital-notch",
+    "Right-Middle-cingulate-cortex-posterior-part",
+    "Right-Angular-gyrus",
+    "Left-O1",
+    "Left-SMA",
+    "Right-Postcentral-sulcus",
+    "Left-Postcentral-sulcus",
+    "Right-Hippocampus-posterior",
+    "Right-Paracentral-lobule"
+  ],
+  "predicted_EZN_roi_names": [],
+  "n_total_draws": 200,
+  "model_binary": "/data_hdd/hmzhang/vbt_runtime/vbt_stan_prebuilt/5367ef4afb976271ecc6297b70a95dd3d944af61/vep_mcmc",
+  "model_binary_sha256": "00ff70aa8ede745afc5f8c64059aec7dc889d17dfda5aae414ad81b126f66662"
+}

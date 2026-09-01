@@ -1,0 +1,53 @@
+{
+  "engineering_status": "PASS",
+  "subject": "sub-001",
+  "truth_loaded": false,
+  "optimizations_attempted": 8,
+  "optimizations_usable": 8,
+  "chains": 4,
+  "chain_return_codes": {
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+  },
+  "rhat_x0_max": 2.6157563839098783,
+  "diagnostics": [
+    {
+      "chain": 1,
+      "draws": 50,
+      "divergences": 7,
+      "max_treedepth_hits": 43,
+      "mean_accept_stat": 0.6702264654000001,
+      "bfmi": 0.9237648000127192,
+      "rejected_nan_proposals": 1
+    },
+    {
+      "chain": 2,
+      "draws": 50,
+      "divergences": 0,
+      "max_treedepth_hits": 50,
+      "mean_accept_stat": 0.9053977999999999,
+      "bfmi": 1.0834349355652122,
+      "rejected_nan_proposals": 1
+    },
+    {
+      "chain": 3,
+      "draws": 50,
+      "divergences": 0,
+      "max_treedepth_hits": 50,
+      "mean_accept_stat": 0.9812942999999998,
+      "bfmi": 1.7728698025966945,
+      "rejected_nan_proposals": 1
+    },
+    {
+      "chain": 4,
+      "draws": 50,
+      "divergences": 0,
+      "max_treedepth_hits": 50,
+      "mean_accept_stat": 0.9765374200000001,
+      "bfmi": 1.6107380628372194,
+      "rejected_nan_proposals": 1
+    }
+  ]
+}

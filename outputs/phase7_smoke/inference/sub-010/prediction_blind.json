@@ -1,0 +1,20 @@
+{
+  "subject": "sub-010",
+  "created_before_ground_truth_load": true,
+  "EZN_rule": "rank by posterior mean x0; larger is more epileptogenic",
+  "top_10_roi_names": [
+    "Left-T1-lateral-posterior",
+    "Left-T1-lateral-anterior",
+    "Left-Insula-gyri-longi",
+    "Left-Temporal-pole",
+    "Left-Orbito-frontal-cortex",
+    "Left-Gyrus-of-Heschl",
+    "Left-F2-rostral",
+    "Left-STS-posterior",
+    "Left-Middle-frontal-sulcus",
+    "Left-F1-lateral-prefrontal"
+  ],
+  "n_total_draws": 10,
+  "model_binary": "/data_hdd/hmzhang/vbt_runtime/vbt_stan_prebuilt/5367ef4afb976271ecc6297b70a95dd3d944af61/vep_mcmc",
+  "model_binary_sha256": "00ff70aa8ede745afc5f8c64059aec7dc889d17dfda5aae414ad81b126f66662"
+}

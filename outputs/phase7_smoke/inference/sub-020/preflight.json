@@ -1,0 +1,41 @@
+{
+  "subject": "sub-020",
+  "selected_seizure": "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/sub-020/ses-01/ieeg/sub-020_ses-01_task-simulatedseizure_acq-VEPhypothesis_run-01_ieeg.vhdr",
+  "task_vhdr_counts": {
+    "simulatedseizure": 2,
+    "simulatedstimulation": 2,
+    "simulatedinterictalspikes": 2
+  },
+  "allowlisted_inputs": [
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/sub-020/ses-01/ieeg/sub-020_ses-01_task-simulatedseizure_acq-VEPhypothesis_run-01_ieeg.vhdr",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/sub-020/sub-020_electrodes.tsv",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-020/struct/sub-020_gain.txt",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-020/struct/sub-020_connectome.zip"
+  ],
+  "gain_sha256": "91e1fae8f30cc87c0e4013fbb88a6fa37d9c44d7e21a528d7c3fd42fa8e67fb6",
+  "sc_sha256": "3e1a0c621ab4c107b3c0de806d1d723546ef21656da23c7abc4bfb40226177ea",
+  "eig_sha256": "bd20067d86ce65875627ba8d65029db2ceb55a4d1fde8d9ffd053e84e4713905",
+  "raw_shape_time_by_channel": [
+    1900,
+    99
+  ],
+  "sfreq_hz": 1000.0,
+  "SC_shape": [
+    162,
+    162
+  ],
+  "gain_shape": [
+    99,
+    162
+  ],
+  "Obs_shape": [
+    159,
+    99
+  ],
+  "cerebellar_gain_columns_suppressed": [
+    80,
+    161
+  ],
+  "strictly_positive_Obs": true,
+  "finite_inputs": true
+}
