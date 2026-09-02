@@ -33,4 +33,8 @@ class TestTruthIsolation(unittest.TestCase):
   unlock=(root/"scripts/29_unlock_independent_patient_cohort.py").read_text().lower()
   self.assertNotIn("vephypothesis",blind); self.assertNotIn("parameter_file",blind)
   self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
+ def test_observation_fit_plotter_is_truth_free(self):
+  root=Path(__file__).resolve().parents[1]
+  text=(root/"scripts/30_plot_observation_fit.py").read_text().lower()
+  self.assertNotIn("ez_truth",text); self.assertNotIn("parameter_file",text)
 if __name__=="__main__": unittest.main()

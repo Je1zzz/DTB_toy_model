@@ -1,0 +1,33 @@
+{
+  "patients": 30,
+  "detail_subject": "sub-001",
+  "target": "log(Obs), derived from observed raw SEEG",
+  "prediction": "Stan xhat_q = amplitude * gain * source_x + sensor_offset",
+  "raw_waveform_prediction": false,
+  "cohort_mean_sample_sd": {
+    "pearson": {
+      "mean": 0.7825933140603102,
+      "std": 0.1395970329306664
+    },
+    "explained_variance": {
+      "mean": 0.621885050188522,
+      "std": 0.2169614812254786
+    },
+    "nrmse": {
+      "mean": 0.10345248034672598,
+      "std": 0.031580369079942314
+    },
+    "temporal_pearson_after_channel_demean": {
+      "mean": 0.39435478921267253,
+      "std": 0.12032387657781246
+    },
+    "temporal_explained_variance_after_channel_demean": {
+      "mean": 0.0719085255239098,
+      "std": 0.08998905360561711
+    },
+    "prediction_to_observed_temporal_sd_ratio_mean": {
+      "mean": 0.11851627596160053,
+      "std": 0.1591085955386667
+    }
+  }
+}
