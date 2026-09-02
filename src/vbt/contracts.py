@@ -79,3 +79,80 @@ class EZNResult:
     posterior_mean_x0: np.ndarray
     primary_score: str
     status: str
+
+
+@dataclass(frozen=True)
+class Condition:
+    """An explicit intervention/initial-state condition for one episode."""
+
+    initial_state: np.ndarray
+    stimulation: np.ndarray | None = None
+    metadata: dict[str, object] = field(default_factory=dict)
+
+    def validate(self, n_regions: int) -> None:
+        state = np.asarray(self.initial_state, dtype=float)
+        if state.shape != (2, n_regions) or not np.isfinite(state).all():
+            raise ValueError(f"initial_state must be finite with shape (2, {n_regions})")
+        if self.stimulation is not None:
+            stimulation = np.asarray(self.stimulation, dtype=float)
+            if stimulation.ndim != 2 or stimulation.shape[1] != n_regions:
+                raise ValueError(f"stimulation must have shape (time, {n_regions})")
+            if not np.isfinite(stimulation).all():
+                raise ValueError("stimulation contains non-finite values")
+
+
+@dataclass(frozen=True)
+class Episode:
+    observation: ObservationBundle
+    condition: Condition
+
+    def validate(self, n_regions: int) -> None:
+        self.observation.validate()
+        self.condition.validate(n_regions)
+
+
+@dataclass(frozen=True)
+class ContextSet:
+    subject_id: str
+    episodes: tuple[Episode, ...]
+
+    def validate(self, n_regions: int) -> None:
+        if not self.episodes:
+            raise ValueError("ContextSet must contain at least one episode")
+        for episode in self.episodes:
+            episode.validate(n_regions)
+            if episode.observation.subject_id != self.subject_id:
+                raise ValueError("all context episodes must belong to the same subject")
+
+
+@dataclass(frozen=True)
+class QueryEpisode:
+    subject_id: str
+    recording_id: str
+    condition: Condition
+    target: ObservationBundle | None = None
+
+    def validate(self, n_regions: int) -> None:
+        self.condition.validate(n_regions)
+        if self.target is not None:
+            self.target.validate()
+            if self.target.subject_id != self.subject_id:
+                raise ValueError("query target subject does not match query subject")
+
+
+@dataclass(frozen=True)
+class PersonalizationResult:
+    subject_id: str
+    x0: np.ndarray
+    coupling: float
+    method: str
+    context_recording_ids: tuple[str, ...]
+    objective: float
+    diagnostics: dict[str, object] = field(default_factory=dict)
+
+    def validate(self, n_regions: int) -> None:
+        values = np.asarray(self.x0, dtype=float)
+        if values.shape != (n_regions,) or not np.isfinite(values).all():
+            raise ValueError(f"x0 must be finite with shape ({n_regions},)")
+        if not np.isfinite(self.coupling) or not np.isfinite(self.objective):
+            raise ValueError("coupling and objective must be finite")
