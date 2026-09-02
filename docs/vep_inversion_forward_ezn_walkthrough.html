@@ -35,6 +35,7 @@
 <main class="wrap">
   <div class="notice"><strong>先纠正一个常见理解：</strong>在当前 Stan inversion 中，forward simulator 已经嵌在 likelihood 里，优化器/采样器每提出一组参数都会重新 forward。得到 <code>x0</code> 后，EZN 是按 <code>x0</code> 排序得到，并不需要再跑一次 forward 才“产生 EZN”。如果要预测新刺激/新 condition，才需要用拟合参数重新 forward；这属于下面的 context–query 路径。</div>
   <div class="callout"><b>单患者全流程已经跑通并通过预设 EZ 门槛：</b><code>sub-001</code> 仅使用本患者 BrainVision seizure、SC、Gain 与电极数据，执行8起点×200迭代 MAP inversion；观测拟合 Pearson=0.771、EV=0.593，EZ AUROC=0.957、AUPRC=0.708，右前/后海马排名第1/2。没有使用 population model 或跨患者训练。PZ 和 source-onset 仍失败，详见 H 节。</div>
+  <div class="redline"><b>但30例独立复现没有得到一致的好 EZN：</b>每例使用相同8×200配置且仍不使用 population model；平均 EZ AUROC=0.430±0.344、AUPRC=0.207±0.206。只有3/30同时达到 AUROC≥0.90 与 AUPRC≥0.50，因此 sub-001 是成功个例而不是总体性能，详见 I 节。</div>
 
   <section class="status-grid">
     <div class="card"><span class="badge ok">单患者 PASS</span><h3>VEP Stan MAP inversion</h3><p>BrainVision seizure + patient SC + patient Gain → log-power → 8起点 MAP → 稳定 <code>x0</code> → EZ 排名。</p></div>
@@ -54,7 +55,7 @@
   </div>
 
   <div class="method-grid">
-    <div class="card toc"><h3>本文目录</h3><a href="#inputs">A. 输入数据</a><a href="#legacy">B. VEP Stan inversion 全步骤</a><a href="#forward">C. 参数后的 forward 到底是什么</a><a href="#context">D. Context–query 路径</a><a href="#commands">E. 一名患者的运行命令</a><a href="#outputs">F. 输出文件如何读</a><a href="#source-ev">G. ROI onset/EV cohort smoke</a><a href="#single-patient">H. sub-001 单患者成功结果</a></div>
+    <div class="card toc"><h3>本文目录</h3><a href="#inputs">A. 输入数据</a><a href="#legacy">B. VEP Stan inversion 全步骤</a><a href="#forward">C. 参数后的 forward 到底是什么</a><a href="#context">D. Context–query 路径</a><a href="#commands">E. 一名患者的运行命令</a><a href="#outputs">F. 输出文件如何读</a><a href="#source-ev">G. ROI onset/EV cohort smoke</a><a href="#single-patient">H. sub-001 单患者成功结果</a><a href="#all-patients">I. 30例 mean±SD 表</a></div>
     <div class="card"><h3>核心代码入口</h3><p><code>src/vbt/cli.py</code>：命令行分发</p><p><code>src/vbt/inference/reference_engine.py</code>：患者数据准备、MAP/NUTS、盲预测</p><p><code>src/vbt/inference/stan/reference_vep_mcmc.stan</code>：forward 方程和 likelihood</p><p><code>scripts/26_finalize_single_patient_blind.py</code>：单患者拟合、稳定性和盲预测冻结</p><p><code>scripts/27_unlock_single_patient_ezn.py</code>：哈希验证后的 EZ/PZ 评价</p><p><code>src/vbt/evaluation/posterior_source.py</code>：Stan source draw 的 onset/EV 汇总</p></div>
   </div>
 
@@ -166,6 +167,8 @@ PYTHONPATH=src $PY scripts/27_unlock_single_patient_ezn.py \
     <tr><td><code>single_patient_prediction_blind.csv</code></td><td>sub-001 MAP x0、跨起点稳定性、主 EZN rank、次要 onset/EV</td><td>无 population model 的单患者冻结预测</td></tr>
     <tr><td><code>single_patient_blind_manifest.json</code></td><td>观测拟合、8起点稳定性、输入输出 hash</td><td>truth-free inversion 的审计证据</td></tr>
     <tr><td><code>single_patient_ezn_evaluation.json</code></td><td>解锁后的 EZ/PZ 指标和预设门检查</td><td>sub-001 synthetic 单患者结果</td></tr>
+    <tr><td><code>independent_patient_subject_metrics.csv</code></td><td>30例逐患者拟合、稳定性、EZ/PZ和时间</td><td>每位患者的独立结果明细</td></tr>
+    <tr><td><code>independent_patient_mean_std_table.csv/.md</code></td><td>所有指标的 n、mean、sample SD、median、min、max</td><td>30例汇总表；PZ仅17例有定义</td></tr>
     <tr><td><code>unlocked_subject_metrics.csv</code></td><td>与 synthetic EZ truth 的 AUROC/AUPRC/rank/Recall</td><td>synthetic cohort 评价；不是临床表现</td></tr>
     <tr><td><code>context_query_v2_audit.md</code></td><td>新 personalization 路径的最终审计</td><td>可信负结果：当前 two-context 设置的信息不足</td></tr>
   </tbody></table>
@@ -206,8 +209,34 @@ PYTHONPATH=src $PY scripts/27_unlock_single_patient_ezn.py \
   </div>
   <div class="callout"><b>单患者结论：</b>从观测信号开始，经由反复 forward 的多起点 MAP inversion，到冻结的患者参数和 EZN 排名，这条链已经真实跑通；在 <code>sub-001</code> synthetic case 上取得较好 EZ 结果且8个起点高度一致。该成功不依赖 population model，但仅是一例 synthetic demonstration。</div>
 
+  <h2 id="all-patients">I. 30例独立单患者 inversion：mean ± sample SD</h2>
+  <p>每位患者都从自己的观测、SC和Gain独立开始；无跨患者训练、无共享参数、无 population EZ frequency。30例盲预测全部先写入并冻结 SHA-256，之后才一次性解锁 truth。批处理墙钟时间830.6秒（13.84分钟）；严格要求8/8起点可用时29/30通过，<code>sub-005</code> 为7/8。</p>
+  <table><thead><tr><th>类别</th><th>指标</th><th>n</th><th>Mean</th><th>SD</th><th>Mean ± SD</th></tr></thead><tbody>
+    <tr><td>观测拟合</td><td>Pearson correlation</td><td>30</td><td>0.7826</td><td>0.1396</td><td>0.7826 ± 0.1396</td></tr>
+    <tr><td>观测拟合</td><td>Explained variance</td><td>30</td><td>0.6219</td><td>0.2170</td><td>0.6219 ± 0.2170</td></tr>
+    <tr><td>观测拟合</td><td>NRMSE</td><td>30</td><td>0.1035</td><td>0.0316</td><td>0.1035 ± 0.0316</td></tr>
+    <tr><td>多起点稳定性</td><td>最小 pairwise x0 rank Spearman</td><td>30</td><td>0.9045</td><td>0.1971</td><td>0.9045 ± 0.1971</td></tr>
+    <tr><td>多起点稳定性</td><td>中位 pairwise x0 rank Spearman</td><td>30</td><td>0.9678</td><td>0.0559</td><td>0.9678 ± 0.0559</td></tr>
+    <tr><td>多起点稳定性</td><td>中位 ROI x0 SD</td><td>30</td><td>0.0052</td><td>0.0118</td><td>0.0052 ± 0.0118</td></tr>
+    <tr><td>EZ</td><td>AUROC</td><td>30</td><td>0.4295</td><td>0.3442</td><td>0.4295 ± 0.3442</td></tr>
+    <tr><td>EZ</td><td>AUPRC</td><td>30</td><td>0.2069</td><td>0.2064</td><td>0.2069 ± 0.2064</td></tr>
+    <tr><td>EZ</td><td>Recall@真实EZ数</td><td>30</td><td>0.1639</td><td>0.2071</td><td>0.1639 ± 0.2071</td></tr>
+    <tr><td>EZ</td><td>首个EZ rank</td><td>30</td><td>41.7333</td><td>56.3908</td><td>41.7333 ± 56.3908</td></tr>
+    <tr><td>PZ</td><td>AUROC</td><td>17</td><td>0.5519</td><td>0.4389</td><td>0.5519 ± 0.4389</td></tr>
+    <tr><td>PZ</td><td>AUPRC</td><td>17</td><td>0.2860</td><td>0.3583</td><td>0.2860 ± 0.3583</td></tr>
+    <tr><td>PZ</td><td>Recall@真实PZ数</td><td>17</td><td>0.2337</td><td>0.3863</td><td>0.2337 ± 0.3863</td></tr>
+    <tr><td>PZ</td><td>首个PZ rank</td><td>17</td><td>60.4118</td><td>69.8767</td><td>60.4118 ± 69.8767</td></tr>
+    <tr><td>EZ∪PZ</td><td>AUROC</td><td>30</td><td>0.4536</td><td>0.3353</td><td>0.4536 ± 0.3353</td></tr>
+    <tr><td>EZ∪PZ</td><td>AUPRC</td><td>30</td><td>0.2891</td><td>0.2554</td><td>0.2891 ± 0.2554</td></tr>
+    <tr><td>EZ∪PZ</td><td>Recall@真实阳性数</td><td>30</td><td>0.2511</td><td>0.2398</td><td>0.2511 ± 0.2398</td></tr>
+    <tr><td>时间</td><td>数据与特征时间（秒/患者）</td><td>30</td><td>1.9673</td><td>0.6241</td><td>1.9673 ± 0.6241</td></tr>
+    <tr><td>时间</td><td>优化时间（秒/患者）</td><td>30</td><td>197.6974</td><td>57.6025</td><td>197.6974 ± 57.6025</td></tr>
+    <tr><td>时间</td><td>总时间（秒/患者）</td><td>30</td><td>200.5849</td><td>57.6964</td><td>200.5849 ± 57.6964</td></tr>
+  </tbody></table>
+  <div class="redline"><b>总体结论：</b>观测重建和多数患者的多起点数值稳定性较好，但这没有转化为总体 EZN 识别能力。EZ AUROC均值低于0.5且变异很大；只有6/30的AUROC≥0.90、4/30的AUPRC≥0.50、3/30同时满足两者。说明当前单患者 inverse likelihood 可以稳定拟合 SEEG，却仍存在严重参数—EZN non-identifiability。</div>
+
   <h2>最后用一句话顺一遍</h2>
-  <div class="callout"><b>当前单患者成功路径：</b>sub-001 synthetic SEEG/SC/Gain → 文件与shape校验 → SEEG log-power → Stan 二状态 simulator 在每次 L-BFGS 更新中重新 forward → 8起点选择观测目标最优解 → 冻结162 ROI x0 排名 → 才读取 EZ/PZ truth。EZ定位通过预设门；PZ、source onset、posterior uncertainty、cohort和临床有效性仍未完成。</div>
+  <div class="callout"><b>当前真实结论：</b>sub-001 的独立单患者链路从观测到 EZN 已跑通并取得好结果；但同样配置扩展到30例后，虽然30/30完成、观测拟合均值较好，平均EZ识别仍差且高度不稳定。因此工程流程完成，单例成功成立，通用的单患者EZN方法尚未成立。</div>
 
   <p class="small">代码与方法来源：<a href="https://github.com/Je1zzz/DTB_toy_model">DTB_toy_model GitHub</a>；<a href="https://www.nature.com/articles/s43588-025-00841-6">Wang et al., Nature Computational Science 2025</a>；<a href="https://github.com/HuifangWang/VBT_INS_Stimulation">论文官方 GitHub</a>。本文描述仓库当前实现及其明确的有效性边界。</p>
 </main>

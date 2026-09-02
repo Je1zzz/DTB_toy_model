@@ -12,3 +12,4 @@ outputs/**/*.npz
 outputs/**/*.npy
 outputs/**/*.png
 outputs/**/*.json
+outputs/**/*.md

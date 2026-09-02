@@ -27,4 +27,10 @@ class TestTruthIsolation(unittest.TestCase):
   unlock=(root/"scripts/27_unlock_single_patient_ezn.py").read_text().lower()
   self.assertNotIn("ez_truth",blind); self.assertNotIn("parameter_file",blind)
   self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
+ def test_independent_cohort_unlock_cannot_launch_inference(self):
+  root=Path(__file__).resolve().parents[1]
+  blind=(root/"scripts/28_run_independent_patient_cohort_blind.py").read_text().lower()
+  unlock=(root/"scripts/29_unlock_independent_patient_cohort.py").read_text().lower()
+  self.assertNotIn("vephypothesis",blind); self.assertNotIn("parameter_file",blind)
+  self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
 if __name__=="__main__": unittest.main()

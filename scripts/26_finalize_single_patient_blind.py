@@ -130,7 +130,7 @@ def main() -> int:
     frame.to_csv(output, index=False)
     pd.DataFrame(start_rows).to_csv(args.run_dir / "optimization_start_summary_blind.csv", index=False)
     manifest = {
-        "subject": report.get("subject", "sub-001"),
+        "subject": report.get("subject", args.run_dir.name),
         "scope": "single patient; no population model",
         "truth_loaded": False,
         "prediction_rule": "descending MAP x0",

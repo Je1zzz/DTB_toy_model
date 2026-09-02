@@ -1,0 +1,14 @@
+{
+  "subjects": 30,
+  "independent_patient_fits": true,
+  "population_model_used": false,
+  "engineering_passed": 29,
+  "patients_ez_auroc_ge_0_90": 6,
+  "patients_ez_auprc_ge_0_50": 4,
+  "patients_both_ez_gates": 3,
+  "batch_wall_seconds": 830.5633163792081,
+  "prediction_hashes_unchanged": true,
+  "inference_launched_by_unlock": false,
+  "aggregation": "Across-patient arithmetic mean and sample standard deviation (ddof=1); report n for every metric.",
+  "claim": "Synthetic VEP cohort engineering benchmark of independent patient fits; not a population model, posterior analysis, clinical validation, or deployment evidence."
+}

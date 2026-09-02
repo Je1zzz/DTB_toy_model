@@ -1,0 +1,30 @@
+{
+  "protocol": "Thirty independent single-patient observation-to-EZN fits v1",
+  "subjects": [
+    "sub-001", "sub-002", "sub-003", "sub-004", "sub-005",
+    "sub-006", "sub-007", "sub-008", "sub-009", "sub-010",
+    "sub-011", "sub-012", "sub-013", "sub-014", "sub-015",
+    "sub-016", "sub-017", "sub-018", "sub-019", "sub-020",
+    "sub-021", "sub-022", "sub-023", "sub-024", "sub-025",
+    "sub-026", "sub-027", "sub-028", "sub-029", "sub-030"
+  ],
+  "scope": "Each patient is fit independently. No population model, cross-patient parameter sharing, cross-patient training, or population EZ frequency is used.",
+  "allowed_blind_inputs_per_patient": [
+    "that patient's BrainVision seizure recording",
+    "that patient's electrodes.tsv",
+    "that patient's structural connectome",
+    "that patient's gain matrix",
+    "atlas ROI names"
+  ],
+  "optimization": {
+    "method": "multi-start L-BFGS MAP",
+    "starts": 8,
+    "maximum_iterations_per_start": 200,
+    "selection": "maximum Stan lp__ using only that patient's observation likelihood and priors",
+    "parameters": ["x0[162]", "z_init[162]", "K", "amplitude", "sensor offsets", "noise"]
+  },
+  "primary_ezn_score": "within-patient MAP x0; larger is more epileptogenic",
+  "truth_policy": "EZ/PZ is forbidden until every patient's prediction CSV has been written and hashed.",
+  "aggregation": "Across-patient arithmetic mean and sample standard deviation (ddof=1); report n for every metric.",
+  "claim_boundary": "Synthetic VEP cohort engineering benchmark of independent patient fits; not a population model, posterior analysis, clinical validation, or deployment evidence."
+}
