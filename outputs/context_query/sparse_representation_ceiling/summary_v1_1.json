@@ -1,0 +1,18 @@
+{
+  "benchmark": "LOSO graph+sparse EZN representation ceiling v1.1 tie-aware reaudit",
+  "epsilon": 0.001,
+  "mean_fractional_recall_at_ez_count": 0.9695014245014246,
+  "median_meaningful_pair_concordance_0_05": 1.0,
+  "median_x0_rmse": 0.013988392405651768,
+  "median_x0_spearman_report_only": 0.352287472952818,
+  "pass": true,
+  "preserves_v1_failure": true,
+  "rank": 20,
+  "sigma_repr": 0.05,
+  "sparse_scale": 0.15,
+  "subjects": 30,
+  "subjects_concordance_ge_0_90": 30,
+  "success_rate": 1.0,
+  "tie_grouped_macro_auprc": 0.9892126388173396,
+  "uses_seeg": false
+}

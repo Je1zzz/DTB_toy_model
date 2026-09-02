@@ -11,7 +11,7 @@ model:
 observation:
   operator: signed_bipolar_gain
   equation: seeg = source @ gain.T
-  residual: iid_gaussian_raw_seeg
+  residual: iid_gaussian_counterfactual_delta_seeg
   primary_endpoint: counterfactual_delta_seeg
 protocol:
   total_steps: 2000
@@ -37,6 +37,22 @@ prior:
 optimization:
   starts: 8
   max_nfev: 1000
+  fit_coupling: false
+fisher_oed_v2:
+  status: authorized_prospective_once
+  derivative_step: 0.01
+  derivative_check_step: 0.005
+  derivative_relative_tolerance: 0.05
+  analysis_steps: [200, 2000]
+  minimum_candidates: 20
+  workers: 6
+  effective_dimension_minimum: 10.0
+  posterior_condition_maximum: 1.0e8
+  median_worst_fold_logdet_improvement_minimum: 2.302585092994046
+  oracle_population_nrmse_minimum: 0.10
+  oracle_population_ev_gap_minimum: 0.10
+  selected_sites_nrmse_fraction_minimum: 0.80
+  symmetric_condition_pair_fraction_minimum: 0.90
 scope:
   stan_2d: legacy_reference_not_performance_comparator
   cohort_6d_7d: mechanistic_reference_and_future_mismatch_generator

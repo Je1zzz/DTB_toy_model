@@ -105,6 +105,24 @@ itself invalidate trajectory prediction. Same-model generation and inversion
 remain an inverse-crime engineering benchmark and cannot establish that
 non-identifiability is solved.
 
+The audited context-query sequence is:
+
+```bash
+PYTHONPATH=src $PY scripts/21_sparse_ezn_representation_ceiling.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=src \
+  $PY scripts/23_fisher_oed_information_gate.py
+```
+
+The original sparse ceiling v1 remains a failure under its preregistered
+Spearman gate. Its tie-aware v1.1 reaudit passes the representation-only gates,
+but does not use SEEG and is not an EZN recovery result. The single authorized
+Fisher/OED v2 passed numerical stability, conditioning and logdet-improvement
+checks, but failed the pre-oracle effective-dimension gate (about 2 versus the
+required 10). Oracle responses were therefore not unlocked, MAP was not run,
+and no protocol v3 is permitted. The frozen conclusion is
+`TRAJECTORY_PERSONALIZATION_BASELINE = FAIL_AT_INFORMATION_GATE`; clinical and
+scientific EZN claims remain stopped. See `docs/context_query_v2_audit.md`.
+
 ## General DTB interface
 
 Forward and inversion are independent selections:

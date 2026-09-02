@@ -21,6 +21,10 @@ class GraphParameterization:
         mean = np.asarray(population_x0, dtype=float)
         if raw.ndim != 2 or raw.shape[0] != raw.shape[1] or mean.shape != (raw.shape[0],):
             raise ValueError("population_x0 and square weights are required")
+        if not np.isfinite(raw).all() or not np.isfinite(mean).all():
+            raise ValueError("population_x0 and weights must be finite")
+        if rank < 1 or rank > mean.size:
+            raise ValueError(f"rank must be in [1, {mean.size}]")
         clipped = np.maximum(raw, 0.0); np.fill_diagonal(clipped, 0.0)
         symmetric = 0.5 * (clipped + clipped.T)
         radius = float(np.max(np.abs(np.linalg.eigvalsh(symmetric))))
@@ -31,8 +35,6 @@ class GraphParameterization:
         isolated = degree == 0
         laplacian[isolated, isolated] = 0.0
         values, vectors = np.linalg.eigh(laplacian)
-        if rank < 1 or rank > mean.size:
-            raise ValueError(f"rank must be in [1, {mean.size}]")
         return cls(mean, vectors[:, :rank], values[:rank], processed, laplacian)
 
     @property
@@ -56,4 +58,7 @@ class GraphParameterization:
         return (1+gamma*self.eigenvalues/denominator)/(scale**2)
     def manifest(self):
         digest = lambda x: hashlib.sha256(np.asarray(x, dtype="<f8").tobytes()).hexdigest()
-        return {"rank": self.rank, "weights_sha256": digest(self.processed_weights), "laplacian_sha256": digest(self.laplacian)}
+        return {"rank": self.rank, "weights_sha256": digest(self.processed_weights),
+                "laplacian_sha256": digest(self.laplacian), "basis_sha256": digest(self.basis),
+                "eigenvalues_sha256": digest(self.eigenvalues),
+                "population_x0_sha256": digest(self.population_x0)}

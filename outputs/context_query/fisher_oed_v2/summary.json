@@ -1,0 +1,26 @@
+{
+  "analysis_steps": [
+    200,
+    2000
+  ],
+  "coupling_fixed": 0.5,
+  "derivative_steps": [
+    0.01,
+    0.005
+  ],
+  "median_worst_fold_logdet_improvement": 8.54868462719799,
+  "oracle_information_pass": false,
+  "oracle_unlocked": false,
+  "pre_oracle_pass": false,
+  "protocol": "Fisher/OED v2 authorized prospective",
+  "rank": 20,
+  "subjects": [
+    "sub-027",
+    "sub-008",
+    "sub-009",
+    "sub-001",
+    "sub-004",
+    "sub-030"
+  ],
+  "trajectory_personalization_baseline": "FAIL_AT_INFORMATION_GATE"
+}
