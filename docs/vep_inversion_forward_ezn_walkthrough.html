@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VBT baseline：新患者从数据到 Inversion、Forward 与 EZN</title>
+  <style>
+    :root{--ink:#172033;--muted:#5f6b7b;--line:#d9e0ea;--bg:#f3f6fa;--card:#fff;--blue:#2563eb;--teal:#087f6b;--amber:#a16207;--red:#b42318;--navy:#14213d;--code:#101827}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.68 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+    header{background:linear-gradient(135deg,#101b35,#1f4e78);color:#fff;padding:42px 24px 34px}
+    header .wrap,.wrap{max-width:1180px;margin:auto} h1{font-size:34px;line-height:1.2;margin:0 0 12px} h2{font-size:25px;margin:34px 0 14px} h3{font-size:18px;margin:0 0 8px} p{margin:7px 0}
+    .subtitle{max-width:900px;color:#dce8f5;font-size:17px}.stamp{margin-top:16px;color:#bcd0e4;font-size:13px}
+    main{padding:24px}.notice{border-left:5px solid var(--amber);background:#fff8e6;padding:15px 18px;border-radius:8px;margin:10px 0 22px}.notice strong{color:#7c4a03}
+    .status-grid,.io-grid,.method-grid{display:grid;gap:14px}.status-grid{grid-template-columns:repeat(3,1fr)}.method-grid{grid-template-columns:repeat(2,1fr)}.io-grid{grid-template-columns:1fr 1fr}
+    .card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 3px 12px rgba(20,33,61,.05)}
+    .badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px}.ok{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#854d0e}.stop{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1e40af}
+    .flow{display:flex;align-items:stretch;gap:4px;overflow-x:auto;padding:8px 1px 14px}.node{min-width:120px;flex:1;background:#fff;border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:10px;padding:10px}.node b{display:block}.arrow{align-self:center;font-size:18px;color:#789;flex:0 0 auto}
+    .step{display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;margin:12px 0}.num{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:white;font-weight:800;font-size:18px}.step-body{min-width:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}.meta{display:grid;grid-template-columns:150px minmax(0,1fr);gap:5px 12px;margin-top:11px}.meta dt{color:var(--muted);font-weight:700}.meta dd{margin:0}
+    code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;color:#164e8a;overflow-wrap:anywhere} pre{max-width:100%;margin:10px 0 0;background:var(--code);color:#e6edf7;border-radius:9px;padding:14px;overflow:auto;line-height:1.5} pre code{color:inherit;overflow-wrap:normal}
+    table{display:block;width:100%;max-width:100%;overflow-x:auto;border-collapse:collapse;background:#fff;border:1px solid var(--line)}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eaf0f7}tr:last-child td{border-bottom:0}
+    .equation{font-family:Cambria,Georgia,serif;background:#eef4ff;border-radius:8px;padding:10px 14px;margin:9px 0;color:#153b72}.callout{background:#eefaf7;border-left:4px solid var(--teal);padding:12px 15px;border-radius:7px}.redline{background:#fff1f0;border-left:4px solid var(--red);padding:12px 15px;border-radius:7px}
+    a{color:#1859a9;text-decoration:none}a:hover{text-decoration:underline}.small{font-size:13px;color:var(--muted)}ul{margin:7px 0;padding-left:20px}li{margin:3px 0}.toc a{display:block;padding:4px 0}
+    footer{padding:32px 24px 45px;color:var(--muted);text-align:center}
+    @media(max-width:850px){.status-grid,.method-grid,.io-grid{grid-template-columns:1fr}.flow{flex-direction:column}.arrow{transform:rotate(90deg)}.meta{grid-template-columns:1fr}.step{grid-template-columns:42px 1fr}.num{width:38px;height:38px}h1{font-size:27px}}
+    @media print{body{background:#fff}.card,.step-body{box-shadow:none}.flow{overflow:visible}a{color:inherit}}
+  </style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>VBT baseline：新患者从数据到 Inversion、Forward 与 EZN</h1>
+  <div class="subtitle">基于 GitHub <b>DTB_toy_model</b> commit <b>127141e</b> 的逐代码说明。示例患者使用 VEP <code>sub-001</code>；每一步都给出输入、方法、函数、输出与当前证据边界。</div>
+  <div class="stamp">生成依据：当前仓库代码，而不是理想化流程图。VEP Cohort v2 是 synthetic cohort，不是临床新患者。</div>
+</div></header>
+
+<main class="wrap">
+  <div class="notice"><strong>先纠正一个常见理解：</strong>在当前 Stan inversion 中，forward simulator 已经嵌在 likelihood 里，优化器/采样器每提出一组参数都会重新 forward。得到 <code>x0</code> 后，EZN 是按 <code>x0</code> 排序得到，并不需要再跑一次 forward 才“产生 EZN”。如果要预测新刺激/新 condition，才需要用拟合参数重新 forward；这属于下面的 context–query 路径。</div>
+
+  <section class="status-grid">
+    <div class="card"><span class="badge ok">可运行</span><h3>VEP legacy Stan inversion</h3><p>BrainVision seizure + SC + Gain → log-power → 二状态 Stan forward/inverse → MAP 或 NUTS → <code>x0</code> 排名。</p></div>
+    <div class="card"><span class="badge warn">接口完成 / VEP 未运行</span><h3>Context–query personalization</h3><p>Context ΔSEEG → graph MAP → 新 query condition 重新模拟。Synthetic 单元测试通过，但 VEP 信息门失败。</p></div>
+    <div class="card"><span class="badge stop">禁止外推</span><h3>科学与临床结论</h3><p>当前结果不能证明临床 EZN、治疗有效性、真实患者泛化，也不能证明所有 DTB personalization 不可行。</p></div>
+  </section>
+
+  <h2 id="overview">一眼看懂：真实代码里的主链路</h2>
+  <div class="flow">
+    <div class="node"><b>1. 患者文件</b><span>VHDR/EEG、electrodes、Gain、SC</span></div><div class="arrow">→</div>
+    <div class="node"><b>2. 校验/对齐</b><span>162 ROI、双极通道、finite、hash</span></div><div class="arrow">→</div>
+    <div class="node"><b>3. 观测特征</b><span>去异常、10 Hz HP、log-power、1 Hz LP</span></div><div class="arrow">→</div>
+    <div class="node"><b>4. Inversion</b><span>Stan 2D forward + L-BFGS / NUTS</span></div><div class="arrow">→</div>
+    <div class="node"><b>5. 患者参数</b><span>162维 x0、K、初态、观测参数</span></div><div class="arrow">→</div>
+    <div class="node"><b>6. EZN</b><span>x0 排名或 posterior source onset/EV</span></div><div class="arrow">→</div>
+    <div class="node"><b>7. Truth unlock</b><span>AUPRC、AUROC、Recall@k，仅评估</span></div>
+  </div>
+
+  <div class="method-grid">
+    <div class="card toc"><h3>本文目录</h3><a href="#inputs">A. 输入数据</a><a href="#legacy">B. VEP Stan inversion 全步骤</a><a href="#forward">C. 参数后的 forward 到底是什么</a><a href="#context">D. Context–query 路径</a><a href="#commands">E. 一名患者的运行命令</a><a href="#outputs">F. 输出文件如何读</a><a href="#source-ev">G. ROI onset/EV 实跑结论</a></div>
+    <div class="card"><h3>核心代码入口</h3><p><code>src/vbt/cli.py</code>：命令行分发</p><p><code>src/vbt/inference/reference_engine.py</code>：患者数据准备、MAP/NUTS、盲预测</p><p><code>src/vbt/inference/stan/reference_vep_mcmc.stan</code>：forward 方程和 likelihood</p><p><code>src/vbt/evaluation/posterior_source.py</code>：Stan source draw 的 onset/EV 流式汇总</p><p><code>scripts/24_export_posterior_source_ezn.py</code>：truth-free ROI 导出</p><p><code>scripts/25_unlock_and_evaluate_source_ezn.py</code>：冻结哈希后的 EZ/PZ 评价</p></div>
+  </div>
+
+  <h2 id="inputs">A. 新患者需要什么数据？</h2>
+  <table><thead><tr><th>数据</th><th>当前 VEP 文件</th><th>代码用途</th><th>必须满足</th></tr></thead><tbody>
+    <tr><td>SEEG seizure</td><td><code>sub-*/ses-*/ieeg/*.vhdr + .eeg</code></td><td>形成 inversion 的观测目标</td><td>BrainVision MULTIPLEXED、FLOAT32；唯一 VEPhypothesis run-01</td></tr>
+    <tr><td>电极表</td><td><code>sub-*_electrodes.tsv</code></td><td>把 contact 名映射到双极 SEEG 名</td><td>行数与 contact Gain 行一致</td></tr>
+    <tr><td>Gain</td><td><code>derivatives/tvb/sub-*/struct/sub-*_gain.txt</code></td><td>ROI source → sensor SEEG</td><td>contact × 162；生成 channel × 162 双极 Gain</td></tr>
+    <tr><td>结构连接 SC</td><td><code>sub-*_connectome.zip/weights.txt</code></td><td>ROI 间耦合传播</td><td>162 × 162；对角清零并除以最大值</td></tr>
+    <tr><td>ROI 名称</td><td><code>connectome.zip/centres.txt</code></td><td>参数和 EZN 输出的解剖标签</td><td>顺序必须与 SC/Gain 的162列一致</td></tr>
+    <tr><td>EZ truth</td><td><code>epileptor_parameters_run-01.tsv</code></td><td>只在 blind prediction 完成后评估</td><td>不能进入 inversion</td></tr>
+  </tbody></table>
+  <div class="redline"><b>临床新患者并不能直接套用当前 VEP 文件合同。</b>当前仓库没有从原始 T1/DWI/implant CT/BDF 自动构建 patient-specific 162-node SC/Gain 的完整临床预处理链；它消费的是已经准备好的 VEP/TVB parcel-level 文件。</div>
+
+  <h2 id="legacy">B. VEP Stan inversion：每一步代码做什么</h2>
+
+  <div class="step"><div class="num">1</div><div class="step-body"><h3>选择患者与唯一 seizure recording</h3><p>入口 <code>vbt.cli._infer()</code> 启动 <code>vbt.inference.reference_engine</code>。引擎搜索文件名同时包含 <code>simulatedseizure</code>、<code>VEPhypothesis</code>、<code>run-01</code> 的 VHDR，并要求恰好一个。</p><dl class="meta"><dt>输入</dt><dd><code>--subject sub-001</code>、dataset root</dd><dt>方法</dt><dd>确定性文件筛选，不使用 truth</dd><dt>代码</dt><dd><code>reference_engine.main()</code></dd><dt>输出</dt><dd>selected seizure path；稍后写入 <code>preflight.json</code></dd></dl></div></div>
+
+  <div class="step"><div class="num">2</div><div class="step-body"><h3>读取 BrainVision SEEG</h3><p><code>read_brainvision()</code> 解析 VHDR，读取 little-endian float32 EEG，根据每通道 resolution 缩放，返回 <code>raw[time, channel]</code>、采样率与有序通道名。</p><dl class="meta"><dt>验证</dt><dd>MULTIPLEXED、IEEE_FLOAT_32、样本总数可被通道数整除</dd><dt>输出</dt><dd><code>raw</code>、<code>sfreq</code>、<code>channel_names</code></dd></dl></div></div>
+
+  <div class="step"><div class="num">3</div><div class="step-body"><h3>加载 SC、Gain，并对齐双极通道</h3><p><code>read_connectome()</code> 读取 <code>weights.txt</code>，对角清零并按全局最大值归一化。<code>bipolar_gain()</code> 对每个通道 A-B 构造 <code>|G_B-G_A|</code>。左右小脑 Gain 列被设为全 Gain 最小值。</p><div class="equation">SC ← SC / max(SC)； Gain<sub>A-B</sub> = |Gain<sub>B</sub> − Gain<sub>A</sub>|</div><p class="small">注意：这是 legacy Stan 路径的 absolute bipolar Gain；新 context-query 路径使用 signed bipolar Gain，两者不能混为同一观测模型。</p></div></div>
+
+  <div class="step"><div class="num">4</div><div class="step-body"><h3>SEEG → positive log-power feature</h3><p><code>log_power_features()</code> 不是直接拟合 raw SEEG。它依次执行：</p><ol><li>逐通道将超过均值 ±2 SD 的点替换为均值；</li><li>三阶、零相位 10 Hz 高通；</li><li>前向100样本窗口计算均方功率并取 log；</li><li>再次做 ±2 SD 异常值处理；</li><li>三阶、零相位 1 Hz 低通；</li><li>按 stride 降采样到约 <code>n_time=150</code>；</li><li>整体平移，使最小值为1且全部严格为正。</li></ol><dl class="meta"><dt>输出</dt><dd><code>Obs[model_time, channel]</code></dd><dt>重要</dt><dd>Stan 内部实际使用 <code>log(Obs)</code> 作为 target</dd></dl></div></div>
+
+  <div class="step"><div class="num">5</div><div class="step-body"><h3>构造参数低维先验坐标</h3><p>代码对双极 Gain 做完整 SVD：<code>_, _, vh = svd(gain)</code>，然后 <code>eig = vh.T</code>。Stan 用它把标准正态 <code>x0_star</code> 映射到162 ROI excitability：</p><div class="equation">x0 = −3.0 + 0.30 · eig · x0_star</div><p>这不是 SC graph eigenbasis，而是 Gain 的右奇异向量基；名称 <code>eig</code> 容易误解。</p></div></div>
+
+  <div class="step"><div class="num">6</div><div class="step-body"><h3>序列化并做输入 QC</h3><p><code>rdump()</code> 写出 Stan 所需 <code>stan_data.R</code>；同时保存 <code>prepared_inputs.npz</code>、四联图 <code>input_qc.png</code> 和带 SHA-256 的 <code>preflight.json</code>。</p><dl class="meta"><dt>检查</dt><dd>SC=(162,162)、Gain=(channels,162)、所有数组 finite、Obs&gt;0</dd><dt>盲性</dt><dd>此阶段不读取 x0/EZ truth</dd></dl></div></div>
+
+  <div class="step"><div class="num">7</div><div class="step-body"><h3>Stan 内部 forward model</h3><p>每一个候选参数都通过相同的二状态 Reduced Epileptor Euler forward：</p><div class="equation">dx = 1 − x³ − 2x² − z + I₁<br>dz = [4(x − x0) − z − K·ΣⱼSCᵢⱼ(xⱼ−xᵢ)] / τ₀<br>x(t+1)=x(t)+0.1·dx；z(t+1)=z(t)+0.1·dz</div><p>冻结常数：<code>dt=0.1</code>、<code>tau0=15</code>、<code>I1=3.1</code>。Sensor prediction：</p><div class="equation">x̂(t) = amp · Gain · x(t) + u</div><p>从第10个 model-time block 之后使用 Gaussian likelihood：<code>log(Obs) ~ Normal(xhat, eps)</code>。</p></div></div>
+
+  <div class="step"><div class="num">8</div><div class="step-body"><h3>Inversion：MAP 或 NUTS</h3><div class="io-grid"><div><span class="badge info">MAP</span><p>CmdStan <b>L-BFGS</b> 多起点优化。按 <code>lp__</code> 选最优解，输出单个 <code>x0</code> point estimate。</p><p>代码：<code>optimize algorithm=lbfgs</code>，结果 <code>prediction_map.csv</code>。</p></div><div><span class="badge info">NUTS</span><p>先用多起点 L-BFGS 选若干好初值，再运行多链 HMC/NUTS，输出 posterior draws。</p><p>必须检查 R-hat、divergence、treedepth、BFMI、NaN rejection；运行成功不等于收敛。</p></div></div><p class="small">Stan 同时估计/变换 <code>x0</code>、初始 <code>z</code>、coupling K、sensor amplitude、offset u 与 noise eps。</p></div></div>
+
+  <div class="step"><div class="num">9</div><div class="step-body"><h3>形成两种不可混称的盲 ROI 排名</h3><p><b>参数型：</b><code>prediction_blind.csv</code> 用 posterior mean <code>x0</code> 从大到小排序，表示较高 excitability。<b>传播型：</b><code>source_ezn_blind.csv</code> 对每个 Stan posterior draw 的二维 Epileptor <code>x</code> 找首次 <code>x&gt;0</code>；从未越界记为 onset=200，再按 Wang 等 2025 的公式计算 draw 内归一化 EV，最后跨 draw 汇总。</p><div class="equation">tᵢ = first{t:xᵢ(t)&gt;0}，否则200； EVᵢ = −log(((tᵢ−min(t))+1)/20)，每 draw 归一化到[0,1]</div><p>同时输出 onset 5/50/95% quantile、recruitment probability、EV quantile 和并列感知 rank。VEP 自带六维 source 文件是 <code>x2−x1</code>，不是这个二维 <code>x</code>，不能直接套用该阈值。</p></div></div>
+
+  <div class="step"><div class="num">10</div><div class="step-body"><h3>Truth unlock 与 EZN 评价</h3><p><code>07c_unlock_truth_and_evaluate.py</code> 先核对 blind prediction SHA-256 未改变，再读取参数 TSV 中的 EZ 列表。<code>vbt.evaluation.ezn.evaluate()</code> 计算 AUROC、tie-grouped AUPRC、first/mean EZ rank、fractional Recall@真实EZ数。</p><p>Truth unlock 只允许写 evaluation 输出，不能反向启动 inference 或修改 prediction。</p></div></div>
+
+  <h2 id="forward">C. “找到参数后开始 forward”在当前代码中是什么意思？</h2>
+  <div class="method-grid">
+    <div class="card"><span class="badge ok">Stan inversion 内已发生</span><h3>解释已观测 seizure</h3><p>Forward 是 likelihood 的组成部分。优化器或 NUTS 每提出 <code>(x0,K,z_init,amp,u,eps)</code>，Stan 就重新积分 source states，再投影到 SEEG，与 Obs 比较。因此 inversion 结束时已经完成大量 forward。</p></div>
+    <div class="card"><span class="badge ok">已导出但被有效性门控</span><h3>后验 source trajectory</h3><p>Stan 已在每个 posterior draw 的 generated quantities 中重新积分 <code>x[region,time]</code>。新增脚本流式读取这些列并导出 onset/recruitment/EV；它不是另起一个不同方程的 replay。只有采样诊断通过且确实出现 source recruitment 时，传播排序才可解释。</p></div>
+    <div class="card"><span class="badge ok">context-query API 已实现</span><h3>预测新 condition</h3><p><code>predict_query()</code> 用拟合的 <code>x0,K</code> 新建 <code>ReducedEpileptor</code>，带 query 的 initial state/stimulation 重新 <code>simulate()</code>，再做 signed Gain 投影。</p></div>
+    <div class="card"><span class="badge stop">VEP cohort 被门控停止</span><h3>但不能对 VEP 宣称成功</h3><p>Fisher/OED v2 的18个 fold 只有约2个有效参数方向，低于预注册门槛10。因此 oracle 未解锁、VEP graph MAP 未运行、protocol v3 被禁止。</p></div>
+  </div>
+
+  <h2 id="context">D. 新 context–query personalization 路径</h2>
+  <table><thead><tr><th>步骤</th><th>代码方法</th><th>真正做的事</th><th>当前状态</th></tr></thead><tbody>
+    <tr><td>合同</td><td><code>Condition / Episode / ContextSet / QueryEpisode</code></td><td>明确 patient-shared 参数与 event-specific 初态/刺激；校验 recording、dt、长度、通道顺序</td><td><span class="badge ok">完成</span></td></tr>
+    <tr><td>低维参数</td><td><code>GraphParameterization.from_connectome()</code></td><td>SC 非负化、对称化、spectral-radius 归一化、normalized Laplacian eigenvectors；<code>x0=population+Bα</code></td><td><span class="badge ok">完成</span></td></tr>
+    <tr><td>Context target</td><td><code>counterfactual_response()</code></td><td>同一候选参数分别模拟 stim 与 zero-control，计算 candidate-specific ΔSEEG</td><td><span class="badge ok">完成</span></td></tr>
+    <tr><td>Inversion</td><td><code>fit_context_map()</code></td><td>多起点 bounded least-squares + graph Gaussian prior；默认固定 K=0.5；保存 data/posterior Jacobian</td><td><span class="badge warn">toy 测试完成，VEP未运行</span></td></tr>
+    <tr><td>Query forward</td><td><code>predict_query()</code></td><td>用 context 拟合参数和未见 query condition 重新运行同一个 ReducedEpileptor</td><td><span class="badge ok">A/C→B synthetic 测试通过</span></td></tr>
+    <tr><td>EZN</td><td>tie-aware representation ceiling</td><td>graph+sparse 表示上限通过，但 sparse residual 未进入 VEP inversion</td><td><span class="badge warn">representation only</span></td></tr>
+    <tr><td>VEP 信息门</td><td><code>23_fisher_oed_information_gate.py</code></td><td>patient SC/Gain + LOSO population x0 设计三刺激；two-context effective dimension≈2</td><td><span class="badge stop">FAIL，停止 MAP</span></td></tr>
+  </tbody></table>
+
+  <h2 id="commands">E. 用 VEP sub-001 顺一遍命令</h2>
+  <div class="card"><h3>1）环境与数据能力审计</h3><pre><code>cd /home/hmzhang/remote/项目/脑数字孪生/methods/VBT_baseline
+PY=/data_hdd/hmzhang/env/tongji/bin/python
+PYTHONPATH=src $PY -m vbt.cli audit-data</code></pre></div>
+  <div class="card"><h3>2）只准备 inversion 输入和 QC（推荐先跑）</h3><pre><code>PYTHONPATH=src $PY -m vbt.inference.reference_engine \
+  --subject sub-001 --prepare-only \
+  --output outputs/tutorial/sub-001</code></pre><p>检查：<code>preflight.json</code>、<code>prepared_inputs.npz</code>、<code>stan_data.R</code>、<code>input_qc.png</code>。</p></div>
+  <div class="card"><h3>3A）MAP 工程点估计</h3><pre><code>PYTHONPATH=src $PY -m vbt.cli infer \
+  --subject sub-001 --inversion map \
+  --opt-starts 8 --opt-iter 200 \
+  --output outputs/tutorial/sub-001-map</code></pre><p>这是快速工程配置；输出 <code>prediction_map.csv</code> 与 <code>map_report.json</code>。Point estimate 不是 posterior uncertainty。</p></div>
+  <div class="card"><h3>3B）NUTS posterior（示例参数不是论文级主分析）</h3><pre><code>PYTHONPATH=src $PY -m vbt.cli infer \
+  --subject sub-001 --inversion nuts \
+  --opt-starts 8 --opt-iter 200 \
+  --chains 4 --warmup 50 --samples 50 \
+  --output outputs/tutorial/sub-001-nuts</code></pre><p>必须打开 <code>blind_run_report.json</code> 检查诊断；短链只是 executability smoke。</p></div>
+  <div class="card"><h3>4）盲导出每个 ROI 的 onset、招募概率和 EV</h3><pre><code>PYTHONPATH=src $PY scripts/24_export_posterior_source_ezn.py \
+  --inference-root outputs/tutorial \
+  --subject sub-001 \
+  --atlas /path/to/VirtualEpilepticCohort/vep_atlas.tsv</code></pre><p>该脚本只读 Stan chains 与 atlas 名称，不读取 EZ/PZ truth；输出和输入 chain 都记录 SHA-256。</p></div>
+  <div class="card"><h3>5）仅在研究 benchmark 中解锁 EZ/PZ</h3><pre><code>PYTHONPATH=src $PY scripts/25_unlock_and_evaluate_source_ezn.py \
+  --inference-root outputs/tutorial \
+  --subject sub-001 \
+  --data-root /path/to/VirtualEpilepticCohort \
+  --output outputs/tutorial/source_ezn_evaluation</code></pre><p>计算 EZ、PZ、EZ∪PZ 的 AUROC、tie-grouped AUPRC、Recall@真实阳性数与首个阳性排名。无 truth 的新患者流程必须停在上一步。</p></div>
+  <div class="notice"><strong>不要把 <code>python -m vbt.cli run</code> 理解成严格的 posterior predictive pipeline。</strong>它只是先调用一个独立 forward 脚本，再调用 inversion；前一个 forward 的输出并没有作为后一个 inversion 的输入，后者也没有自动把 posterior 参数传回前者重放。</div>
+
+  <h2 id="outputs">F. 输出文件怎么读</h2>
+  <table><thead><tr><th>文件</th><th>含义</th><th>可以声称什么</th></tr></thead><tbody>
+    <tr><td><code>preflight.json</code></td><td>输入路径、shape、hash、采样率、阶段耗时</td><td>本次输入合同与可追溯性</td></tr>
+    <tr><td><code>input_qc.png</code></td><td>raw SEEG、Obs、SC、Gain 的可视 QC</td><td>数据被读取和变换；不能证明科学有效</td></tr>
+    <tr><td><code>prediction_map.csv</code></td><td>MAP x0 与 ROI rank</td><td>单点工程估计；无后验不确定性</td></tr>
+    <tr><td><code>prediction_blind.csv</code></td><td>NUTS posterior x0 summaries、R-hat、rank</td><td>truth-free 患者参数与 EZN score；需诊断通过</td></tr>
+    <tr><td><code>blind_run_report.json</code></td><td>R-hat、divergence、treedepth、BFMI、返回码</td><td>判断 inference 是否具有基本数值可信度</td></tr>
+    <tr><td><code>source_ezn_blind.csv</code></td><td>每 ROI posterior onset、recruitment probability、EV 与并列排名</td><td>truth-free 传播型定位；需诊断与招募门同时通过</td></tr>
+    <tr><td><code>source_ezn_blind_manifest.json</code></td><td>论文公式、source 变量、chain/output hashes、draw 数</td><td>方法与盲预测冻结证据</td></tr>
+    <tr><td><code>source_ezn_subject_metrics.csv</code></td><td>EZ/PZ/EZ∪PZ 的 AUROC/AUPRC/rank/Recall</td><td>解锁后的 synthetic benchmark</td></tr>
+    <tr><td><code>source_ezn_cohort_summary.json</code></td><td>cohort macro 指标、诊断门、招募门与 claim boundary</td><td>是否可以解释 EZN 结果</td></tr>
+    <tr><td><code>unlocked_subject_metrics.csv</code></td><td>与 synthetic EZ truth 的 AUROC/AUPRC/rank/Recall</td><td>synthetic cohort 评价；不是临床表现</td></tr>
+    <tr><td><code>context_query_v2_audit.md</code></td><td>新 personalization 路径的最终审计</td><td>可信负结果：当前 two-context 设置的信息不足</td></tr>
+  </tbody></table>
+
+  <h2 id="source-ev">G. ROI onset、排序与 EZ/PZ：实际跑通后的结论</h2>
+  <div class="method-grid">
+    <div class="card"><span class="badge ok">工程闭环 PASS</span><h3>30/30 可生成逐 ROI 输出</h3><p>每例读取2条短链、共10个 draws；盲导出后才解锁 truth，预测 CSV 的 SHA-256 在评估前后完全一致。输出覆盖162个 ROI 的 onset quantile、招募概率、EV quantile 和 tie-aware rank。</p></div>
+    <div class="card"><span class="badge stop">科学门 FAIL</span><h3>posterior 不可用于可信定位</h3><p>30/30 患者均为 <code>FAIL_DIAGNOSTICS</code>；只有10/30出现任何 <code>x&gt;0</code> 的 ROI，20/30没有任何招募。无招募时全部 EV=0、并列 rank=81.5，不存在可解释的 onset 顺序。</p></div>
+  </div>
+  <table><thead><tr><th>目标</th><th>Macro AUROC</th><th>Macro AUPRC</th><th>Recall@真实阳性数</th><th>首个阳性 rank</th></tr></thead><tbody>
+    <tr><td>EZ（30例定义）</td><td>0.534</td><td>0.095</td><td>0.090</td><td>均值68.6；中位81.5</td></tr>
+    <tr><td>PZ（17例定义）</td><td>0.601</td><td>0.167</td><td>0.164</td><td>均值58.6；中位81.5</td></tr>
+    <tr><td>EZ∪PZ（30例定义）</td><td>0.558</td><td>0.150</td><td>0.145</td><td>均值60.4；中位81.5</td></tr>
+  </tbody></table>
+  <div class="redline"><b>这些数值不能作为模型识别能力证据。</b>它们来自每链5 draws 的 engineering smoke，所有病例的 NUTS 诊断均失败，而且多数病例没有论文定义下的招募。可信下一步不是调 <code>x&gt;0</code> 阈值，而是用足够长的模型时间窗和完整 NUTS 配置重新反演，并同时通过 convergence gate、posterior recruitment gate 和冻结盲评估。</div>
+
+  <h2>最后用一句话顺一遍</h2>
+  <div class="callout"><b>当前真正可运行的 VEP 路径：</b>synthetic patient SEEG/SC/Gain → 文件与shape校验 → SEEG log-power → Stan 二状态 simulator 嵌入 likelihood → L-BFGS/NUTS inversion → 一路输出 x0 参数排名；另一路从每个 posterior draw 的二维 x 计算 ROI onset/recruitment/EV → 冻结盲预测哈希 → 才读取 synthetic EZ/PZ truth 评价。当前30例 smoke 工程闭环已通，但诊断与招募门失败，所以 EZN 科学结论为“不可信/未验证”。</div>
+
+  <p class="small">代码与方法来源：<a href="https://github.com/Je1zzz/DTB_toy_model">DTB_toy_model GitHub</a>；<a href="https://www.nature.com/articles/s43588-025-00841-6">Wang et al., Nature Computational Science 2025</a>；<a href="https://github.com/HuifangWang/VBT_INS_Stimulation">论文官方 GitHub</a>。本文描述仓库当前实现及其明确的有效性边界。</p>
+</main>
+<footer>VBT baseline code walkthrough · engineering behavior ≠ scientific validation ≠ clinical deployment</footer>
+</body>
+</html>

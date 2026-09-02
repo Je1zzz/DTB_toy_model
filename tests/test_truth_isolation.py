@@ -15,4 +15,10 @@ class TestTruthIsolation(unittest.TestCase):
  def test_unlock_cannot_launch_inference(self):
   text=(Path(__file__).resolve().parents[1]/"scripts/07c_unlock_truth_and_evaluate.py").read_text().lower()
   self.assertNotIn("subprocess",text); self.assertNotIn("reference_engine",text)
+ def test_source_ev_export_is_truth_free_and_unlock_cannot_infer(self):
+  root=Path(__file__).resolve().parents[1]
+  blind=(root/"scripts/24_export_posterior_source_ezn.py").read_text().lower()
+  unlock=(root/"scripts/25_unlock_and_evaluate_source_ezn.py").read_text().lower()
+  self.assertNotIn("vephypothesis",blind); self.assertNotIn("epileptor_parameters",blind)
+  self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
 if __name__=="__main__": unittest.main()

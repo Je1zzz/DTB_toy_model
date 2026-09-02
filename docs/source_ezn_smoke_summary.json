@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-02",
+  "cohort": "VEP_Cohort_v2.0 synthetic subjects sub-001 through sub-030",
+  "run_mode": "ENGINEERING_SMOKE_ONLY",
+  "posterior_configuration": {
+    "chains_per_subject": 2,
+    "draws_per_chain": 5,
+    "draws_per_subject": 10
+  },
+  "method": {
+    "source": "Stan generated quantity x from the inferred two-dimensional Epileptor",
+    "onset": "first time index where x > 0; otherwise 200",
+    "ev": "-log(((onset-min(onset))+1)/20), normalized to [0,1] within each draw",
+    "reference": "Wang et al., Nature Computational Science (2025), doi:10.1038/s43588-025-00841-6"
+  },
+  "truth_isolation": {
+    "subjects_evaluated": 30,
+    "prediction_hashes_unchanged": true,
+    "inference_launched_by_unlock": false
+  },
+  "validity_gates": {
+    "subjects_passing_inference_diagnostics": 0,
+    "subjects_failing_inference_diagnostics": 30,
+    "subjects_with_any_recruited_roi": 10,
+    "subjects_without_any_recruited_roi": 20,
+    "scientific_status": "FAIL_DIAGNOSTICS",
+    "method_validity_gate": "FAIL_NO_POSTERIOR_RECRUITMENT"
+  },
+  "macro_metrics": {
+    "ez": {
+      "subjects_defined": 30,
+      "auroc_mean": 0.5335683127,
+      "average_precision_mean": 0.0954655350,
+      "recall_at_truth_count_mean": 0.0895898362,
+      "first_positive_rank_mean": 68.5833333333
+    },
+    "pz": {
+      "subjects_defined": 17,
+      "auroc_mean": 0.6008518844,
+      "average_precision_mean": 0.1669623405,
+      "recall_at_truth_count_mean": 0.1637731910,
+      "first_positive_rank_mean": 58.5882352941
+    },
+    "ez_or_pz": {
+      "subjects_defined": 30,
+      "auroc_mean": 0.5583453502,
+      "average_precision_mean": 0.1500102881,
+      "recall_at_truth_count_mean": 0.1447533609,
+      "first_positive_rank_mean": 60.3666666667
+    }
+  },
+  "claim": "Engineering pipeline completed, but the smoke posterior does not provide scientifically valid EZN identification evidence."
+}
