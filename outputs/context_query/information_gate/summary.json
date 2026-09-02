@@ -1,0 +1,17 @@
+{
+  "subjects": [
+    "sub-027",
+    "sub-008",
+    "sub-009",
+    "sub-001",
+    "sub-004",
+    "sub-030"
+  ],
+  "coupling": 0.5,
+  "endpoint": "candidate-specific counterfactual delta SEEG",
+  "median_condition_nrmse": 1.6529656595861708,
+  "condition_pairs_ge_0_10": 1.0,
+  "median_oracle_population_nrmse": 0.04830714806583577,
+  "median_oracle_population_ev_gap": 0.0023395474502074243,
+  "pass": false
+}

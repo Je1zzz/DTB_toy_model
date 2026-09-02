@@ -45,3 +45,12 @@ def trajectory_metrics(prediction: np.ndarray, target: np.ndarray) -> dict[str, 
     scale = float(np.sqrt(np.mean(observed**2)))
     nrmse = float(np.sqrt(np.mean(residual**2)) / scale) if scale > 0 else float("nan")
     return {"explained_variance": ev, "nrmse": nrmse}
+
+
+def counterfactual_response(model: ReducedEpileptor, initial_state: np.ndarray,
+                            stimulation: np.ndarray, gain: np.ndarray) -> np.ndarray:
+    """Return candidate-specific stimulated minus candidate-specific control SEEG."""
+    drive=np.asarray(stimulation,float); steps=drive.shape[0]
+    stimulated=model.simulate(initial_state,steps,drive)
+    control=model.simulate(initial_state,steps,np.zeros_like(drive))
+    return project_to_seeg(stimulated,gain)-project_to_seeg(control,gain)

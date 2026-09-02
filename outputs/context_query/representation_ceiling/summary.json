@@ -1,0 +1,38 @@
+{
+  "benchmark": "LOSO graph-only EZN representation ceiling",
+  "primary_rank_stop": true,
+  "results": [
+    {
+      "macro_auprc": 0.42291707753218116,
+      "mean_recall_at_ez_count": 0.36198626909153225,
+      "median_x0_spearman": 0.29201748975532194,
+      "pass_ezn_ceiling": false,
+      "rank": 10,
+      "subjects": 30
+    },
+    {
+      "macro_auprc": 0.6257187034220754,
+      "mean_recall_at_ez_count": 0.5267829830987726,
+      "median_x0_spearman": 0.31551754857623193,
+      "pass_ezn_ceiling": false,
+      "rank": 20,
+      "subjects": 30
+    },
+    {
+      "macro_auprc": 0.761209021744611,
+      "mean_recall_at_ez_count": 0.6714427628901313,
+      "median_x0_spearman": 0.3381658662005157,
+      "pass_ezn_ceiling": false,
+      "rank": 40,
+      "subjects": 30
+    }
+  ],
+  "scope": "representation only; not inversion or clinical validation",
+  "thresholds": {
+    "macro_auprc": 0.9,
+    "mean_recall_at_ez_count": 0.9,
+    "median_x0_spearman": 0.9
+  },
+  "uses_query": false,
+  "uses_seeg": false
+}

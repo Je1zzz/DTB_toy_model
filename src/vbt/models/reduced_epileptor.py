@@ -46,3 +46,15 @@ class ReducedEpileptor:
                 raise FloatingPointError(f"non-finite reduced state at step {step + 1}")
             output[step] = state[0]
         return output
+
+
+def reference_initial_state(dt: float = 0.05) -> np.ndarray:
+    """Frozen global state from x0=-2.5 zero-stimulation burn-in."""
+    model=ReducedEpileptor(np.array([-2.5]),0.5,np.zeros((1,1)),dt=dt)
+    state=np.zeros((2,1)); consecutive=0
+    for _ in range(200_000):
+        x,z=state; derivative=np.stack((1-x**3-2*x**2-z,(4*(x-model.x0)-z)/model.tau))
+        state += dt*derivative
+        consecutive=consecutive+1 if np.max(np.abs(derivative))<1e-10 else 0
+        if consecutive>=100: return state[:,0].copy()
+    raise RuntimeError("reference initial-state burn-in did not converge")

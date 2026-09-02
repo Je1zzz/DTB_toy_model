@@ -1,0 +1,43 @@
+contract_version: reduced-epileptor-context-query-v1
+status: experimental_same_model_synthetic
+model:
+  states: [x, z]
+  source: x
+  dt: 0.05
+  tau: 20.0
+  x0_bounds: [-3.5, -1.0]
+  coupling_bounds: [0.05, 5.0]
+  coupling_primary: 0.5
+observation:
+  operator: signed_bipolar_gain
+  equation: seeg = source @ gain.T
+  residual: iid_gaussian_raw_seeg
+  primary_endpoint: counterfactual_delta_seeg
+protocol:
+  total_steps: 2000
+  stimulation_onset_step: 200
+  stimulation_amplitude: 30.0
+  stimulation_duration_steps: 1
+  snr_db: 30.0
+  initial_state: global_reference_burnin
+basis:
+  type: symmetric_normalized_laplacian
+  rank_primary: 20
+  rank_sensitivity: [10, 40]
+  negative_sc: clip_to_zero
+  symmetrization: mean
+  normalization: spectral_radius
+prior:
+  gamma: 1.0
+  roi_x0_scale: 0.30
+  log_coupling_scale: 0.35
+  sparse_residual: smooth_laplace
+  sparse_scale: 0.15
+  sparse_epsilon: 0.001
+optimization:
+  starts: 8
+  max_nfev: 1000
+scope:
+  stan_2d: legacy_reference_not_performance_comparator
+  cohort_6d_7d: mechanistic_reference_and_future_mismatch_generator
+  clinical_claims: prohibited

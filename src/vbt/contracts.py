@@ -36,6 +36,15 @@ class ObservationBundle:
             raise ValueError("empty observation or invalid sampling frequency")
         if not np.isfinite(self.seeg).all():
             raise ValueError("ObservationBundle contains non-finite values")
+        if len(set(self.channel_names)) != len(self.channel_names):
+            raise ValueError("channel_names must be unique and ordered")
+        if self.time_s.ndim != 1 or not np.isfinite(self.time_s).all():
+            raise ValueError("time_s must be a finite vector")
+        if self.time_s.size > 1:
+            increments = np.diff(self.time_s)
+            expected = 1.0 / self.sampling_frequency_hz
+            if np.any(increments <= 0) or not np.allclose(increments, expected, rtol=1e-5, atol=1e-9):
+                raise ValueError("time_s is not strictly regular at sampling_frequency_hz")
 
 
 @dataclass(frozen=True)
@@ -119,10 +128,14 @@ class ContextSet:
     def validate(self, n_regions: int) -> None:
         if not self.episodes:
             raise ValueError("ContextSet must contain at least one episode")
+        recording_ids: list[str] = []
         for episode in self.episodes:
             episode.validate(n_regions)
             if episode.observation.subject_id != self.subject_id:
                 raise ValueError("all context episodes must belong to the same subject")
+            recording_ids.append(episode.observation.recording_id)
+        if len(set(recording_ids)) != len(recording_ids):
+            raise ValueError("context recording IDs must be unique")
 
 
 @dataclass(frozen=True)

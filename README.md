@@ -80,6 +80,31 @@ $PY scripts/07d_make_final_report.py
 Engineering completion is not clinical validation. Synthetic results do not
 establish clinical EZN identification, treatment efficacy, or generalization.
 
+## Experimental context-query baseline
+
+`ReducedEpileptor` is a deliberately simplified, internally consistent
+two-state experimental baseline for context-conditioned personalization and
+unseen-intervention prediction. Its equation, `dt`, `tau`, raw-SEEG likelihood,
+signed bipolar Gain convention, parameter ranges, spectral prior and optimizer
+settings are frozen in `configs/context_query_model.yaml`.
+
+This path is not equation- or performance-equivalent to the legacy two-state
+Stan inference or the cohort six/seven-state generators. Those remain legacy
+inference and mechanistic/model-mismatch references; numerical differences
+between them must not be attributed to personalization. VEP-provided
+`simulated*` recordings are simulated, not empirical or clinical SEEG.
+
+Before graph-only EZN inference, run the LOSO representation ceiling:
+
+```bash
+PYTHONPATH=src $PY scripts/20_ezn_representation_ceiling.py
+```
+
+Failure of the frozen EZN ceiling stops graph-only EZN claims but does not by
+itself invalidate trajectory prediction. Same-model generation and inversion
+remain an inverse-crime engineering benchmark and cannot establish that
+non-identifiability is solved.
+
 ## General DTB interface
 
 Forward and inversion are independent selections:

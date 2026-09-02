@@ -1,0 +1,200 @@
+[
+  {
+    "subject": "sub-027",
+    "site": 80,
+    "oracle_population_nrmse": 0.0016925313989070668,
+    "oracle_population_ev_gap": 2.8708246608832866e-06
+  },
+  {
+    "subject": "sub-027",
+    "site": 7,
+    "oracle_population_nrmse": 0.9673914545983429,
+    "oracle_population_ev_gap": 0.9410196250851119
+  },
+  {
+    "subject": "sub-027",
+    "site": 57,
+    "oracle_population_nrmse": 0.0474456679534778,
+    "oracle_population_ev_gap": 0.0022562469455263967
+  },
+  {
+    "subject": "sub-027",
+    "site_pair": "80-7",
+    "condition_nrmse": 103.97448162036156
+  },
+  {
+    "subject": "sub-027",
+    "site_pair": "80-57",
+    "condition_nrmse": 1.08328924412289
+  },
+  {
+    "subject": "sub-027",
+    "site_pair": "7-57",
+    "condition_nrmse": 0.9998211889041657
+  },
+  {
+    "subject": "sub-008",
+    "site": 80,
+    "oracle_population_nrmse": 0.0015216527026119177,
+    "oracle_population_ev_gap": 2.320373774677975e-06
+  },
+  {
+    "subject": "sub-008",
+    "site": 59,
+    "oracle_population_nrmse": 0.0598895542315386,
+    "oracle_population_ev_gap": 0.0035945138571964463
+  },
+  {
+    "subject": "sub-008",
+    "site": 1,
+    "oracle_population_nrmse": 0.15979184991410036,
+    "oracle_population_ev_gap": 0.025588331749171966
+  },
+  {
+    "subject": "sub-008",
+    "site_pair": "80-59",
+    "condition_nrmse": 2.6543795516193853
+  },
+  {
+    "subject": "sub-008",
+    "site_pair": "80-1",
+    "condition_nrmse": 1.9821872482190501
+  },
+  {
+    "subject": "sub-008",
+    "site_pair": "59-1",
+    "condition_nrmse": 1.2558065124534215
+  },
+  {
+    "subject": "sub-009",
+    "site": 80,
+    "oracle_population_nrmse": 0.001521823636265963,
+    "oracle_population_ev_gap": 2.320893757734588e-06
+  },
+  {
+    "subject": "sub-009",
+    "site": 152,
+    "oracle_population_nrmse": 0.02544677352275107,
+    "oracle_population_ev_gap": 0.0006490287035672004
+  },
+  {
+    "subject": "sub-009",
+    "site": 128,
+    "oracle_population_nrmse": 0.049168628178193736,
+    "oracle_population_ev_gap": 0.002422847954888452
+  },
+  {
+    "subject": "sub-009",
+    "site_pair": "80-152",
+    "condition_nrmse": 1.890450392000113
+  },
+  {
+    "subject": "sub-009",
+    "site_pair": "80-128",
+    "condition_nrmse": 9.054176126592138
+  },
+  {
+    "subject": "sub-009",
+    "site_pair": "152-128",
+    "condition_nrmse": 4.607205099947578
+  },
+  {
+    "subject": "sub-001",
+    "site": 80,
+    "oracle_population_nrmse": 0.0038288004456040713,
+    "oracle_population_ev_gap": 1.468987273800515e-05
+  },
+  {
+    "subject": "sub-001",
+    "site": 41,
+    "oracle_population_nrmse": 0.01776322346646349,
+    "oracle_population_ev_gap": 0.0003161859191563865
+  },
+  {
+    "subject": "sub-001",
+    "site": 61,
+    "oracle_population_nrmse": 0.017361550980418153,
+    "oracle_population_ev_gap": 0.00030204869225891606
+  },
+  {
+    "subject": "sub-001",
+    "site_pair": "80-41",
+    "condition_nrmse": 1.4154809271722286
+  },
+  {
+    "subject": "sub-001",
+    "site_pair": "80-61",
+    "condition_nrmse": 1.0436674520278482
+  },
+  {
+    "subject": "sub-001",
+    "site_pair": "41-61",
+    "condition_nrmse": 1.3759287533070506
+  },
+  {
+    "subject": "sub-004",
+    "site": 80,
+    "oracle_population_nrmse": 0.052121678372569605,
+    "oracle_population_ev_gap": 0.002722364494787688
+  },
+  {
+    "subject": "sub-004",
+    "site": 122,
+    "oracle_population_nrmse": 0.147627234874292,
+    "oracle_population_ev_gap": 0.02183764935488508
+  },
+  {
+    "subject": "sub-004",
+    "site": 82,
+    "oracle_population_nrmse": 0.08541980479377183,
+    "oracle_population_ev_gap": 0.007312228707027191
+  },
+  {
+    "subject": "sub-004",
+    "site_pair": "80-122",
+    "condition_nrmse": 5.74150108496817
+  },
+  {
+    "subject": "sub-004",
+    "site_pair": "80-82",
+    "condition_nrmse": 0.97563118003559
+  },
+  {
+    "subject": "sub-004",
+    "site_pair": "122-82",
+    "condition_nrmse": 1.0004691586955168
+  },
+  {
+    "subject": "sub-030",
+    "site": 80,
+    "oracle_population_nrmse": 0.11973145912244021,
+    "oracle_population_ev_gap": 0.01437012088388212
+  },
+  {
+    "subject": "sub-030",
+    "site": 153,
+    "oracle_population_nrmse": 0.994031714820637,
+    "oracle_population_ev_gap": 0.9883169905335694
+  },
+  {
+    "subject": "sub-030",
+    "site": 122,
+    "oracle_population_nrmse": 0.03557460272099397,
+    "oracle_population_ev_gap": 0.0012685258519662401
+  },
+  {
+    "subject": "sub-030",
+    "site_pair": "80-153",
+    "condition_nrmse": 92.03357809820463
+  },
+  {
+    "subject": "sub-030",
+    "site_pair": "80-122",
+    "condition_nrmse": 1.9515673853541862
+  },
+  {
+    "subject": "sub-030",
+    "site_pair": "153-122",
+    "condition_nrmse": 1.0002807372581553
+  }
+]

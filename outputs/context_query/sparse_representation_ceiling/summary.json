@@ -1,0 +1,15 @@
+{
+  "benchmark": "LOSO graph+sparse EZN representation ceiling",
+  "epsilon": 0.001,
+  "macro_auprc": 0.9892126388173396,
+  "mean_recall_at_ez_count": 0.9695014245014246,
+  "median_x0_rmse": 0.013988392405651768,
+  "median_x0_spearman": 0.352287472952818,
+  "pass": false,
+  "rank": 20,
+  "sigma_repr": 0.05,
+  "sparse_scale": 0.15,
+  "subjects": 30,
+  "success_rate": 1.0,
+  "uses_seeg": false
+}
