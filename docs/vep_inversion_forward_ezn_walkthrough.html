@@ -28,15 +28,16 @@
 <body>
 <header><div class="wrap">
   <h1>VBT baseline：新患者从数据到 Inversion、Forward 与 EZN</h1>
-  <div class="subtitle">基于 GitHub <b>DTB_toy_model</b> commit <b>127141e</b> 的逐代码说明。示例患者使用 VEP <code>sub-001</code>；每一步都给出输入、方法、函数、输出与当前证据边界。</div>
+  <div class="subtitle">基于 GitHub <b>DTB_toy_model</b> 当前代码的逐代码说明。示例患者使用 VEP <code>sub-001</code>；每一步都给出输入、方法、函数、输出与当前证据边界。</div>
   <div class="stamp">生成依据：当前仓库代码，而不是理想化流程图。VEP Cohort v2 是 synthetic cohort，不是临床新患者。</div>
 </div></header>
 
 <main class="wrap">
   <div class="notice"><strong>先纠正一个常见理解：</strong>在当前 Stan inversion 中，forward simulator 已经嵌在 likelihood 里，优化器/采样器每提出一组参数都会重新 forward。得到 <code>x0</code> 后，EZN 是按 <code>x0</code> 排序得到，并不需要再跑一次 forward 才“产生 EZN”。如果要预测新刺激/新 condition，才需要用拟合参数重新 forward；这属于下面的 context–query 路径。</div>
+  <div class="callout"><b>单患者全流程已经跑通并通过预设 EZ 门槛：</b><code>sub-001</code> 仅使用本患者 BrainVision seizure、SC、Gain 与电极数据，执行8起点×200迭代 MAP inversion；观测拟合 Pearson=0.771、EV=0.593，EZ AUROC=0.957、AUPRC=0.708，右前/后海马排名第1/2。没有使用 population model 或跨患者训练。PZ 和 source-onset 仍失败，详见 H 节。</div>
 
   <section class="status-grid">
-    <div class="card"><span class="badge ok">可运行</span><h3>VEP legacy Stan inversion</h3><p>BrainVision seizure + SC + Gain → log-power → 二状态 Stan forward/inverse → MAP 或 NUTS → <code>x0</code> 排名。</p></div>
+    <div class="card"><span class="badge ok">单患者 PASS</span><h3>VEP Stan MAP inversion</h3><p>BrainVision seizure + patient SC + patient Gain → log-power → 8起点 MAP → 稳定 <code>x0</code> → EZ 排名。</p></div>
     <div class="card"><span class="badge warn">接口完成 / VEP 未运行</span><h3>Context–query personalization</h3><p>Context ΔSEEG → graph MAP → 新 query condition 重新模拟。Synthetic 单元测试通过，但 VEP 信息门失败。</p></div>
     <div class="card"><span class="badge stop">禁止外推</span><h3>科学与临床结论</h3><p>当前结果不能证明临床 EZN、治疗有效性、真实患者泛化，也不能证明所有 DTB personalization 不可行。</p></div>
   </section>
@@ -53,8 +54,8 @@
   </div>
 
   <div class="method-grid">
-    <div class="card toc"><h3>本文目录</h3><a href="#inputs">A. 输入数据</a><a href="#legacy">B. VEP Stan inversion 全步骤</a><a href="#forward">C. 参数后的 forward 到底是什么</a><a href="#context">D. Context–query 路径</a><a href="#commands">E. 一名患者的运行命令</a><a href="#outputs">F. 输出文件如何读</a><a href="#source-ev">G. ROI onset/EV 实跑结论</a></div>
-    <div class="card"><h3>核心代码入口</h3><p><code>src/vbt/cli.py</code>：命令行分发</p><p><code>src/vbt/inference/reference_engine.py</code>：患者数据准备、MAP/NUTS、盲预测</p><p><code>src/vbt/inference/stan/reference_vep_mcmc.stan</code>：forward 方程和 likelihood</p><p><code>src/vbt/evaluation/posterior_source.py</code>：Stan source draw 的 onset/EV 流式汇总</p><p><code>scripts/24_export_posterior_source_ezn.py</code>：truth-free ROI 导出</p><p><code>scripts/25_unlock_and_evaluate_source_ezn.py</code>：冻结哈希后的 EZ/PZ 评价</p></div>
+    <div class="card toc"><h3>本文目录</h3><a href="#inputs">A. 输入数据</a><a href="#legacy">B. VEP Stan inversion 全步骤</a><a href="#forward">C. 参数后的 forward 到底是什么</a><a href="#context">D. Context–query 路径</a><a href="#commands">E. 一名患者的运行命令</a><a href="#outputs">F. 输出文件如何读</a><a href="#source-ev">G. ROI onset/EV cohort smoke</a><a href="#single-patient">H. sub-001 单患者成功结果</a></div>
+    <div class="card"><h3>核心代码入口</h3><p><code>src/vbt/cli.py</code>：命令行分发</p><p><code>src/vbt/inference/reference_engine.py</code>：患者数据准备、MAP/NUTS、盲预测</p><p><code>src/vbt/inference/stan/reference_vep_mcmc.stan</code>：forward 方程和 likelihood</p><p><code>scripts/26_finalize_single_patient_blind.py</code>：单患者拟合、稳定性和盲预测冻结</p><p><code>scripts/27_unlock_single_patient_ezn.py</code>：哈希验证后的 EZ/PZ 评价</p><p><code>src/vbt/evaluation/posterior_source.py</code>：Stan source draw 的 onset/EV 汇总</p></div>
   </div>
 
   <h2 id="inputs">A. 新患者需要什么数据？</h2>
@@ -134,6 +135,21 @@ PYTHONPATH=src $PY -m vbt.cli audit-data</code></pre></div>
   --subject sub-001 \
   --data-root /path/to/VirtualEpilepticCohort \
   --output outputs/tutorial/source_ezn_evaluation</code></pre><p>计算 EZ、PZ、EZ∪PZ 的 AUROC、tie-grouped AUPRC、Recall@真实阳性数与首个阳性排名。无 truth 的新患者流程必须停在上一步。</p></div>
+  <div class="card"><h3>sub-001 本次成功运行的精确命令</h3><pre><code>PYTHONPATH=src $PY -m vbt.inference.reference_engine \
+  --blind-only --map-only --subject sub-001 \
+  --output outputs/single_patient_e2e/sub-001 \
+  --opt-starts 8 --best-inits 4 --opt-iter 200 \
+  --max-parallel 4 --seed 260902
+
+PYTHONPATH=src $PY scripts/26_finalize_single_patient_blind.py \
+  --run-dir outputs/single_patient_e2e/sub-001 \
+  --protocol docs/single_patient_e2e_protocol_sub001.json
+
+# 只有冻结 prediction SHA-256 后，研究评价才运行：
+PYTHONPATH=src $PY scripts/27_unlock_single_patient_ezn.py \
+  --run-dir outputs/single_patient_e2e/sub-001 \
+  --protocol docs/single_patient_e2e_protocol_sub001.json \
+  --parameter-file /path/to/sub-001_epileptor_parameters_run-01.tsv</code></pre></div>
   <div class="notice"><strong>不要把 <code>python -m vbt.cli run</code> 理解成严格的 posterior predictive pipeline。</strong>它只是先调用一个独立 forward 脚本，再调用 inversion；前一个 forward 的输出并没有作为后一个 inversion 的输入，后者也没有自动把 posterior 参数传回前者重放。</div>
 
   <h2 id="outputs">F. 输出文件怎么读</h2>
@@ -147,6 +163,9 @@ PYTHONPATH=src $PY -m vbt.cli audit-data</code></pre></div>
     <tr><td><code>source_ezn_blind_manifest.json</code></td><td>论文公式、source 变量、chain/output hashes、draw 数</td><td>方法与盲预测冻结证据</td></tr>
     <tr><td><code>source_ezn_subject_metrics.csv</code></td><td>EZ/PZ/EZ∪PZ 的 AUROC/AUPRC/rank/Recall</td><td>解锁后的 synthetic benchmark</td></tr>
     <tr><td><code>source_ezn_cohort_summary.json</code></td><td>cohort macro 指标、诊断门、招募门与 claim boundary</td><td>是否可以解释 EZN 结果</td></tr>
+    <tr><td><code>single_patient_prediction_blind.csv</code></td><td>sub-001 MAP x0、跨起点稳定性、主 EZN rank、次要 onset/EV</td><td>无 population model 的单患者冻结预测</td></tr>
+    <tr><td><code>single_patient_blind_manifest.json</code></td><td>观测拟合、8起点稳定性、输入输出 hash</td><td>truth-free inversion 的审计证据</td></tr>
+    <tr><td><code>single_patient_ezn_evaluation.json</code></td><td>解锁后的 EZ/PZ 指标和预设门检查</td><td>sub-001 synthetic 单患者结果</td></tr>
     <tr><td><code>unlocked_subject_metrics.csv</code></td><td>与 synthetic EZ truth 的 AUROC/AUPRC/rank/Recall</td><td>synthetic cohort 评价；不是临床表现</td></tr>
     <tr><td><code>context_query_v2_audit.md</code></td><td>新 personalization 路径的最终审计</td><td>可信负结果：当前 two-context 设置的信息不足</td></tr>
   </tbody></table>
@@ -163,8 +182,32 @@ PYTHONPATH=src $PY -m vbt.cli audit-data</code></pre></div>
   </tbody></table>
   <div class="redline"><b>这些数值不能作为模型识别能力证据。</b>它们来自每链5 draws 的 engineering smoke，所有病例的 NUTS 诊断均失败，而且多数病例没有论文定义下的招募。可信下一步不是调 <code>x&gt;0</code> 阈值，而是用足够长的模型时间窗和完整 NUTS 配置重新反演，并同时通过 convergence gate、posterior recruitment gate 和冻结盲评估。</div>
 
+  <h2 id="single-patient">H. sub-001：无 population model 的单患者全流程结果</h2>
+  <div class="flow">
+    <div class="node"><b>患者观测</b><span>BrainVision seizure + patient SC/Gain</span></div><div class="arrow">→</div>
+    <div class="node"><b>观测特征</b><span>157×79 positive log-power</span></div><div class="arrow">→</div>
+    <div class="node"><b>反复 forward</b><span>每个候选参数重新积分162 ROI</span></div><div class="arrow">→</div>
+    <div class="node"><b>8起点 inversion</b><span>各200次 L-BFGS，按 lp__ 选择</span></div><div class="arrow">→</div>
+    <div class="node"><b>冻结 EZN</b><span>162 ROI MAP x0 降序 + SHA-256</span></div><div class="arrow">→</div>
+    <div class="node"><b>Truth unlock</b><span>仅评价 EZ/PZ</span></div>
+  </div>
+  <table><thead><tr><th>检查</th><th>结果</th><th>判断</th></tr></thead><tbody>
+    <tr><td>优化可用性</td><td>8/8 起点；best lp = −2985.69；总耗时87.0 s</td><td><span class="badge ok">PASS</span></td></tr>
+    <tr><td>观测拟合</td><td>Pearson 0.771；EV 0.593；NRMSE 0.133</td><td><span class="badge ok">PASS</span></td></tr>
+    <tr><td>多起点稳定性</td><td>x0 rank Spearman 中位0.999、最小0.991；x0 SD中位0.00032</td><td><span class="badge ok">稳定</span></td></tr>
+    <tr><td>盲性</td><td>prediction SHA-256 冻结并在 unlock 时验证；unlock 不启动 inference</td><td><span class="badge ok">PASS</span></td></tr>
+    <tr><td>EZ 识别</td><td>AUROC 0.957；AUPRC 0.708；Recall@3=2/3；首个EZ rank=1</td><td><span class="badge ok">预设门 PASS</span></td></tr>
+    <tr><td>PZ 识别</td><td>AUROC 0.073；AUPRC 0.020；Recall@5=0</td><td><span class="badge stop">FAIL</span></td></tr>
+    <tr><td>二维 source onset</td><td>当前157点时间窗内0个 ROI 越过 x&gt;0</td><td><span class="badge stop">FAIL_NO_SOURCE_RECRUITMENT</span></td></tr>
+  </tbody></table>
+  <div class="method-grid">
+    <div class="card"><span class="badge ok">EZ 排名</span><h3>前三名命中两个真实 EZ</h3><ol><li>Right-Hippocampus-anterior（真实EZ）</li><li>Right-Hippocampus-posterior（真实EZ）</li><li>Right-ITS-anterior</li></ol><p>第三个真实EZ Right-Amygdala 为并列第23.5。</p></div>
+    <div class="card"><span class="badge warn">正确解释</span><h3>这是 excitability 定位，不是传播恢复</h3><p>主 EZN score 是反演得到的 <code>x0</code>。模型对本患者 EZ 定位很好，但 PZ 和 onset 失败，因此不能声称已恢复完整 seizure propagation，也没有 posterior uncertainty。</p></div>
+  </div>
+  <div class="callout"><b>单患者结论：</b>从观测信号开始，经由反复 forward 的多起点 MAP inversion，到冻结的患者参数和 EZN 排名，这条链已经真实跑通；在 <code>sub-001</code> synthetic case 上取得较好 EZ 结果且8个起点高度一致。该成功不依赖 population model，但仅是一例 synthetic demonstration。</div>
+
   <h2>最后用一句话顺一遍</h2>
-  <div class="callout"><b>当前真正可运行的 VEP 路径：</b>synthetic patient SEEG/SC/Gain → 文件与shape校验 → SEEG log-power → Stan 二状态 simulator 嵌入 likelihood → L-BFGS/NUTS inversion → 一路输出 x0 参数排名；另一路从每个 posterior draw 的二维 x 计算 ROI onset/recruitment/EV → 冻结盲预测哈希 → 才读取 synthetic EZ/PZ truth 评价。当前30例 smoke 工程闭环已通，但诊断与招募门失败，所以 EZN 科学结论为“不可信/未验证”。</div>
+  <div class="callout"><b>当前单患者成功路径：</b>sub-001 synthetic SEEG/SC/Gain → 文件与shape校验 → SEEG log-power → Stan 二状态 simulator 在每次 L-BFGS 更新中重新 forward → 8起点选择观测目标最优解 → 冻结162 ROI x0 排名 → 才读取 EZ/PZ truth。EZ定位通过预设门；PZ、source onset、posterior uncertainty、cohort和临床有效性仍未完成。</div>
 
   <p class="small">代码与方法来源：<a href="https://github.com/Je1zzz/DTB_toy_model">DTB_toy_model GitHub</a>；<a href="https://www.nature.com/articles/s43588-025-00841-6">Wang et al., Nature Computational Science 2025</a>；<a href="https://github.com/HuifangWang/VBT_INS_Stimulation">论文官方 GitHub</a>。本文描述仓库当前实现及其明确的有效性边界。</p>
 </main>

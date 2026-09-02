@@ -1,0 +1,35 @@
+{
+  "protocol": "Single-patient observation-to-EZN end-to-end v1",
+  "subject": "sub-001",
+  "scope": "individual patient only; no population model, no cross-patient training, no population EZ frequency",
+  "allowed_blind_inputs": [
+    "sub-001 BrainVision seizure recording",
+    "sub-001 electrodes.tsv",
+    "sub-001 structural connectome",
+    "sub-001 gain matrix",
+    "atlas ROI names"
+  ],
+  "observation_pipeline": "artifact clipping, 10 Hz high-pass, 100-sample log power, 1 Hz low-pass, model-time resampling",
+  "inverse_model": "reference two-dimensional VEP Stan model",
+  "optimization": {
+    "method": "multi-start L-BFGS MAP",
+    "starts": 8,
+    "maximum_iterations_per_start": 200,
+    "parallel_workers": 4,
+    "selection": "maximum Stan lp__ using observation likelihood and priors only",
+    "parameters": ["x0[162]", "z_init[162]", "K", "amplitude", "sensor offsets", "noise"]
+  },
+  "primary_ezn_score": "MAP x0; larger is more epileptogenic",
+  "secondary_propagation_output": "MAP generated-quantity source x: first x>0 onset and Nature Computational Science 2025 EV",
+  "truth_policy": "EZ and PZ are forbidden during feature extraction, optimization, start selection, and prediction export; they are loaded only after prediction SHA256 is frozen.",
+  "success_gates": {
+    "engineering_status": "PASS",
+    "usable_optimizations_min": 8,
+    "finite_observation_fit": true,
+    "EZ_AUROC_min": 0.90,
+    "EZ_AUPRC_min": 0.50,
+    "recall_at_three_min": 0.6666666666666666,
+    "first_EZ_rank_max": 3
+  },
+  "claim_boundary": "Synthetic VEP single-patient demonstration; not posterior uncertainty, cohort generalization, clinical validation, or deployment evidence."
+}

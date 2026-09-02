@@ -21,4 +21,10 @@ class TestTruthIsolation(unittest.TestCase):
   unlock=(root/"scripts/25_unlock_and_evaluate_source_ezn.py").read_text().lower()
   self.assertNotIn("vephypothesis",blind); self.assertNotIn("epileptor_parameters",blind)
   self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
+ def test_single_patient_finalize_is_blind_and_unlock_cannot_infer(self):
+  root=Path(__file__).resolve().parents[1]
+  blind=(root/"scripts/26_finalize_single_patient_blind.py").read_text().lower()
+  unlock=(root/"scripts/27_unlock_single_patient_ezn.py").read_text().lower()
+  self.assertNotIn("ez_truth",blind); self.assertNotIn("parameter_file",blind)
+  self.assertNotIn("subprocess",unlock); self.assertNotIn("reference_engine",unlock)
 if __name__=="__main__": unittest.main()

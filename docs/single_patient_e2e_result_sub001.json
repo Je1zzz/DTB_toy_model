@@ -1,0 +1,57 @@
+{
+  "subject": "sub-001",
+  "scope": "single patient only; no population model",
+  "input": "patient BrainVision seizure, electrodes, SC, gain and ROI atlas",
+  "inversion": {
+    "method": "multi-start L-BFGS MAP in the two-dimensional VEP Stan model",
+    "starts_attempted": 8,
+    "starts_usable": 8,
+    "maximum_iterations_per_start": 200,
+    "best_start": 1,
+    "best_lp": -2985.69,
+    "wall_seconds": 87.0316371480
+  },
+  "observation_fit": {
+    "pearson": 0.7710693157,
+    "explained_variance": 0.5931229936,
+    "nrmse_by_range": 0.1329033579
+  },
+  "multi_start_stability": {
+    "pairwise_x0_rank_spearman_min": 0.9912244428,
+    "pairwise_x0_rank_spearman_median": 0.9989217519,
+    "x0_across_start_sd_median": 0.0003178259,
+    "x0_across_start_sd_max": 0.0029004008
+  },
+  "blind_freeze": {
+    "prediction_sha256": "3019ce6291fc96f8a6187d9d9c23fbd9817899376b24a576d0883fec2d4faa63",
+    "prediction_hash_verified_at_unlock": true,
+    "inference_launched_by_unlock": false
+  },
+  "ez_result": {
+    "auroc": 0.9570230608,
+    "average_precision": 0.7083333333,
+    "recall_at_true_ez_count": 0.6666666667,
+    "first_ez_rank": 1.0,
+    "top_three": [
+      "Right-Hippocampus-anterior",
+      "Right-Hippocampus-posterior",
+      "Right-ITS-anterior"
+    ],
+    "ez_ranks": {
+      "Right-Hippocampus-anterior": 1.0,
+      "Right-Hippocampus-posterior": 2.0,
+      "Right-Amygdala": 23.5
+    }
+  },
+  "pz_result": {
+    "auroc": 0.0726114650,
+    "average_precision": 0.0197703796,
+    "recall_at_true_pz_count": 0.0
+  },
+  "secondary_source_onset": {
+    "recruited_rois": 0,
+    "status": "FAIL_NO_SOURCE_RECRUITMENT"
+  },
+  "success_gate": "PASS",
+  "claim": "Successful synthetic VEP single-patient EZ demonstration; PZ and source-onset recovery failed; no cohort or clinical claim."
+}
