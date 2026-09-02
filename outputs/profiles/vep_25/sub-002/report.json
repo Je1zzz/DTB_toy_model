@@ -1,0 +1,70 @@
+{
+  "profile": {
+    "name": "vep_25",
+    "model": "repo_spatepi_stim_7d",
+    "coupling": "heaviside",
+    "stochastic": false,
+    "tt": 0.17,
+    "tau0": 1000.0,
+    "tau2": 10.0,
+    "tau3": 600.0,
+    "parcel_stimulus_scale": 0.001,
+    "reference": "VBT_INS_Stimulation tag 0.1.0 (e8b6f597), utils_model4.py/notebooks"
+  },
+  "subject": "sub-002",
+  "duration": 900.0,
+  "recording": "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/sub-002/ses-02/ieeg/sub-002_ses-02_task-simulatedstimulation_acq-VEPhypothesis_run-01_ieeg.vhdr",
+  "parameter_files": [
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_epileptor_parameters_run-01.tsv",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_simulator_parameters_run-01.tsv",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_stimulation_parameters_run-01.tsv"
+  ],
+  "shapes": {
+    "time": [
+      10
+    ],
+    "spontaneous_time": [
+      100
+    ],
+    "waveform": [
+      500
+    ],
+    "spontaneous_source": [
+      100,
+      162
+    ],
+    "stimulated_source": [
+      10,
+      162
+    ],
+    "spontaneous_seeg": [
+      100,
+      85
+    ],
+    "stimulated_seeg": [
+      10,
+      85
+    ],
+    "forward_ezn_score": [
+      162
+    ],
+    "region_names": [
+      162
+    ]
+  },
+  "top10_forward_ezn": [
+    "Left-Cerebellar-cortex",
+    "Left-Hippocampus-posterior",
+    "Left-Putamen",
+    "Right-Cerebellar-cortex",
+    "Left-Amygdala",
+    "Left-Insula-gyri-longi",
+    "Left-Rhinal-cortex",
+    "Left-Thalamus",
+    "Left-Pallidum",
+    "Left-Parahippocampal-cortex"
+  ],
+  "inference": "Use scripts/05a-05c for reference Stan EZN; forward score is descriptive, not posterior EZN.",
+  "vep_25_scope": "PARCEL_INPUT_APPROXIMATION",
+  "status": "ENGINEERING_FORWARD_PASS; SCIENTIFIC_VALIDATION_NOT_ESTABLISHED"
+}

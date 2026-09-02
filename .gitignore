@@ -1,11 +1,14 @@
 __pycache__/
 *.py[cod]
+outputs/*.json
+outputs/*.npz
+outputs/*.png
 
-# Generated run artifacts - do not commit (sampling chains, data, logs, plots)
+# Generated run artifacts - compact reports are force-added deliberately.
 outputs/**/*.csv
 outputs/**/*.R
 outputs/**/*.log
 outputs/**/*.npz
 outputs/**/*.npy
 outputs/**/*.png
-outputs/*.json
+outputs/**/*.json

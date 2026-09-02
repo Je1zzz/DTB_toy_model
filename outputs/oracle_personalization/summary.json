@@ -1,0 +1,84 @@
+{
+  "subjects": 30,
+  "duration": 4500.0,
+  "endpoint": "early-recruitment Jaccard@20 against provided synthetic source; secondary onset-rank Spearman",
+  "arms": [
+    {
+      "arm": "DYN_ONLY",
+      "jaccard_mean": 0.163926495915571,
+      "jaccard_median": 0.15966386554621848,
+      "spearman_mean": 0.16550519601645816,
+      "time_mean_s": 339.6044862735551
+    },
+    {
+      "arm": "FULL",
+      "jaccard_mean": 0.163926495915571,
+      "jaccard_median": 0.15966386554621848,
+      "spearman_mean": 0.1654656864547657,
+      "time_mean_s": 342.14522682656536
+    },
+    {
+      "arm": "MISMATCHED",
+      "jaccard_mean": 0.15179034082525636,
+      "jaccard_median": 0.14285714285714285,
+      "spearman_mean": 0.0176703245436349,
+      "time_mean_s": 339.83182647985717
+    },
+    {
+      "arm": "POP",
+      "jaccard_mean": 0.15625873240281982,
+      "jaccard_median": 0.12698412698412698,
+      "spearman_mean": NaN,
+      "time_mean_s": 343.3135621146299
+    },
+    {
+      "arm": "SC_ONLY",
+      "jaccard_mean": 0.15625873240281982,
+      "jaccard_median": 0.12698412698412698,
+      "spearman_mean": NaN,
+      "time_mean_s": 332.464428685753
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison": "FULL-minus-SC_ONLY",
+      "mean_delta": 0.007667763512751236,
+      "bootstrap_95ci": [
+        -0.00026109437874143813,
+        0.01649082830624413
+      ],
+      "sign_flip_p": 0.07529247075292471
+    },
+    {
+      "comparison": "FULL-minus-DYN_ONLY",
+      "mean_delta": 0.0,
+      "bootstrap_95ci": [
+        0.0,
+        0.0
+      ],
+      "sign_flip_p": 1.0
+    },
+    {
+      "comparison": "FULL-minus-POP",
+      "mean_delta": 0.007667763512751236,
+      "bootstrap_95ci": [
+        -0.000358357633899431,
+        0.016282257585236125
+      ],
+      "sign_flip_p": 0.0842915708429157
+    },
+    {
+      "comparison": "FULL-minus-MISMATCHED",
+      "mean_delta": 0.01213615509031468,
+      "bootstrap_95ci": [
+        0.004932287426148854,
+        0.020093894507174474
+      ],
+      "sign_flip_p": 0.004199580041995801
+    }
+  ],
+  "timing_seconds": {
+    "wall": 13096.7411046559
+  },
+  "scope": "oracle synthetic personalization value; original RNG/trajectory not reproduced"
+}

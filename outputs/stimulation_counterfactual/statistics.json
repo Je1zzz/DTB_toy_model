@@ -1,0 +1,39 @@
+{
+  "subjects": 14,
+  "comparisons": [
+    {
+      "comparison": "oracle-minus-random_median",
+      "mean_delta_auroc": 0.25270593398941393,
+      "median_delta_auroc": 0.09650621118012426,
+      "bootstrap_95ci": [
+        0.07370225543269643,
+        0.44389069174679535
+      ],
+      "exact_sign_flip_p_two_sided": 0.02294921875,
+      "subjects_better": 11
+    },
+    {
+      "comparison": "provided-minus-random_median",
+      "mean_delta_auroc": 0.14952023006916676,
+      "median_delta_auroc": 0.06548838865371676,
+      "bootstrap_95ci": [
+        -0.03191231179760624,
+        0.3344184494405331
+      ],
+      "exact_sign_flip_p_two_sided": 0.1455078125,
+      "subjects_better": 9
+    },
+    {
+      "comparison": "inferred-minus-random_median",
+      "mean_delta_auroc": -0.1212616257754379,
+      "median_delta_auroc": -0.12377161949685542,
+      "bootstrap_95ci": [
+        -0.3524105310904827,
+        0.1297020816893897
+      ],
+      "exact_sign_flip_p_two_sided": 0.371337890625,
+      "subjects_better": 4
+    }
+  ],
+  "interpretation": "oracle tests whether location matters; provided is a dataset protocol comparator, not a clinical decision; inferred-EVN is exploratory and fails the inversion-quality gate"
+}

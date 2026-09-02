@@ -1,0 +1,23 @@
+{
+  "reference": "/home/hmzhang/remote/\u9879\u76ee/\u8111\u6570\u5b57\u5b6a\u751f/methods/VBT_INS_Stimulation/vep_stim/core/utils_py/utils_model4.py",
+  "reference_commit_required": "5367ef4afb976271ecc6297b70a95dd3d944af61",
+  "states": [
+    "u1",
+    "u2",
+    "s",
+    "q1",
+    "q2",
+    "g",
+    "m"
+  ],
+  "steps": 500,
+  "dt": 0.1,
+  "derivative_max_abs_error": 1.3552527156068805e-20,
+  "heun_single_step_max_abs_error": 0.0,
+  "trajectory_finite": true,
+  "trajectory_max_abs_error": 8.673617379884035e-19,
+  "equation_gate": "PASS",
+  "single_step_gate": "PASS",
+  "trajectory_gate": "PASS",
+  "scope": "equation/integrator trajectory with explicit region-level coupling; not TVB surface/delay equivalence"
+}

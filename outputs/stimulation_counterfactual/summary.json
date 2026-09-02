@@ -1,0 +1,25 @@
+{
+  "subjects": 14,
+  "actions": 322,
+  "random_actions_per_subject": 20,
+  "post_window": 500.0,
+  "inferred_evn_rule": "channel maximizing normalized gain engagement of top-10 MAP EZN regions; no EZ truth used for action selection",
+  "inferred_policy_gate": "EXPLORATORY_FAIL_INVERSION_QUALITY",
+  "policy_response_auroc_mean": {
+    "inferred": 0.35480805361107187,
+    "oracle": 0.7287756133759238,
+    "provided": 0.6255899094556766,
+    "random": 0.47606967938650985
+  },
+  "policy_target_engagement_mean": {
+    "inferred": 0.1603633308647663,
+    "oracle": 0.6543292146006384,
+    "provided": 0.19479760752451541,
+    "random": 0.04632662148739469
+  },
+  "timing_seconds": {
+    "wall": 292.15631851903163,
+    "per_subject_mean": 20.864843977781543
+  },
+  "scope": "synthetic diagnostic stimulation; location-only matched-dose counterfactual, not therapeutic suppression"
+}

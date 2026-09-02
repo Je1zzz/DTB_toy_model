@@ -1,0 +1,39 @@
+{
+  "question": "How long does one traditional patient-personalization and next-stimulation workflow take?",
+  "units": "wall-clock seconds",
+  "hardware_context": "remote cuhk139 runtime; timings are implementation-specific",
+  "prepare_repeats": 3,
+  "traditional_map": {
+    "configuration": "2 L-BFGS starts x 50 iterations; point estimate only",
+    "single_patient_total_mean_seconds": 57.63894084051717,
+    "optimization_seconds": 55.02207014572341,
+    "optimization_fraction": 0.9545989107947966
+  },
+  "traditional_bayesian_smoke": {
+    "configuration": "2 L-BFGS starts x 50; 2 NUTS chains; 5 warmup + 5 draws per chain",
+    "single_patient_total_seconds": 329.1263993510511,
+    "sampling_seconds": 298.3079718458466,
+    "sampling_fraction": 0.9063629427296925,
+    "quality_status": "FAIL_DIAGNOSTICS",
+    "interpretation": "lower-bound runtime demonstration, not a converged traditional Bayesian run"
+  },
+  "next_stimulation": {
+    "candidate_geometry_per_patient_seconds": 0.06973922335808831,
+    "evaluated_actions_per_patient": 23.0,
+    "forward_per_action_amortized_seconds": 0.9071671294687628,
+    "forward_all_actions_per_patient_seconds": 20.864843977781543
+  },
+  "end_to_end": {
+    "map_to_ezn_seconds": 57.63894084051717,
+    "map_plus_geometry_only_selection_seconds": 57.70868006387526,
+    "map_plus_23_action_forward_optimization_seconds": 78.57352404165681,
+    "nuts_smoke_plus_23_action_forward_optimization_seconds": 350.06098255219075
+  },
+  "fast_personalization_targets": [
+    "replace iterative MAP/NUTS inference or amortize it with a trained encoder",
+    "retain explicit EZN uncertainty/calibration gate",
+    "batch stimulation candidates because shared burn-in makes per-action cost sublinear",
+    "do not count optional QC rendering as algorithm latency"
+  ],
+  "scientific_scope": "synthetic VEP benchmark; not clinical deployment latency"
+}

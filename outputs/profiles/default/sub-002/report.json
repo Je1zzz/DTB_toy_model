@@ -1,0 +1,70 @@
+{
+  "profile": {
+    "name": "default",
+    "model": "cohort_stim_7d",
+    "coupling": "difference",
+    "stochastic": true,
+    "tt": 1.0,
+    "tau0": 2857.0,
+    "tau2": 10.0,
+    "tau3": 2857.0,
+    "parcel_stimulus_scale": 1.0,
+    "reference": "VEP_Cohort_v2.0 generator"
+  },
+  "subject": "sub-002",
+  "duration": 900.0,
+  "recording": "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/sub-002/ses-02/ieeg/sub-002_ses-02_task-simulatedstimulation_acq-VEPhypothesis_run-01_ieeg.vhdr",
+  "parameter_files": [
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_epileptor_parameters_run-01.tsv",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_simulator_parameters_run-01.tsv",
+    "/home/hmzhang/remote/public_data/VEP_Cohort_v2.0/data/VirtualEpilepticCohort/derivatives/tvb/sub-002/ses-02/VEPhypothesis/parameters/sub-002_stimulation_parameters_run-01.tsv"
+  ],
+  "shapes": {
+    "time": [
+      900
+    ],
+    "spontaneous_time": [
+      900
+    ],
+    "waveform": [
+      18000
+    ],
+    "spontaneous_source": [
+      900,
+      162
+    ],
+    "stimulated_source": [
+      900,
+      162
+    ],
+    "spontaneous_seeg": [
+      900,
+      85
+    ],
+    "stimulated_seeg": [
+      900,
+      85
+    ],
+    "forward_ezn_score": [
+      162
+    ],
+    "region_names": [
+      162
+    ]
+  },
+  "top10_forward_ezn": [
+    "Left-Hippocampus-anterior",
+    "Left-F3-Pars-Orbitalis",
+    "Right-Gyrus-rectus",
+    "Left-Lingual-sulcus",
+    "Left-F2-caudal",
+    "Right-PreSMA",
+    "Right-Subcallosal-area",
+    "Right-Thalamus",
+    "Left-Superior-parietal-lobule-P1",
+    "Left-F2-rostral"
+  ],
+  "inference": "Use scripts/05a-05c for reference Stan EZN; forward score is descriptive, not posterior EZN.",
+  "vep_25_scope": "COHORT_NATIVE",
+  "status": "ENGINEERING_FORWARD_PASS; SCIENTIFIC_VALIDATION_NOT_ESTABLISHED"
+}

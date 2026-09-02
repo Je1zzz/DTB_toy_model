@@ -6,15 +6,16 @@ propagation, stimulation, reduced-Epileptor inversion, and EZN ranking on
 
 ## Scientific profiles
 
-| Profile | Purpose | Source | Coupling | Integrator |
-| --- | --- | --- | --- | --- |
-| `vep_cohort` | primary replay of VEP spontaneous data | `x2-x1` | Difference, raw-max SC | HeunStochastic, saved `dt/nsig`, colored noise |
-| `legacy_spatepi` | diagnostic old VBT notebook path | monitored `u1-q1` | Heaviside, log-normalized SC | deterministic adapted Heun |
+| Profile | Spontaneous | Stimulation | Purpose |
+| --- | --- | --- | --- |
+| `default` | cohort 6D, `x2-x1` | cohort 7D, Difference | smallest stable parcel baseline |
+| `vep_25` | same cohort 6D engine | repo `SpatEpiStim` 7D, `u1-q1`, Heaviside | repository-core fidelity at parcel level |
 
-The legacy implementation is **not** the direct generator of the VEP
-spontaneous cohort. The previous Phase-1 label `x1-x2` was incorrect for both
-profiles: VEP spontaneous data store `x2-x1`; the custom VBT subtraction was
-`u1-q1` (state indices 0 and 3), not indices 0 and 1.
+These are the only selectable profiles. `vep_25` freezes the canonical notebook
+settings (`dt=.2`, monitor period 10, `tt=.17`, `tau0=1000`, `tau3=600`) and
+Git tag `0.1.0` (`e8b6f597...`). It exactly targets the tested repo7D RHS and
+Heun semantics, not the different four-state equation printed in the paper.
+See `docs/reference_conflicts.md`.
 
 Stimulated VEP recordings use a separate seven-state compatibility model,
 `EpileptorStim2Populations`, with accumulation state `m`. Saved run parameters
@@ -58,6 +59,9 @@ never erases an earlier FAIL; legacy adaptive-tau results are comparator-only.
 cd /home/hmzhang/remote/项目/脑数字孪生/methods/VBT_baseline
 PY=/data_hdd/hmzhang/env/tongji/bin/python
 $PY -m unittest discover -s tests -v
+$PY scripts/run_profile.py --profile default --subject sub-002
+$PY scripts/run_profile.py --profile vep_25 --subject sub-002
+$PY scripts/09_verify_repo_equivalence.py
 $PY scripts/01b_reference_spontaneous.py
 $PY scripts/01c_diagnose_long_window.py
 $PY scripts/02_propagation.py
@@ -75,3 +79,20 @@ $PY scripts/07d_make_final_report.py
 
 Engineering completion is not clinical validation. Synthetic results do not
 establish clinical EZN identification, treatment efficacy, or generalization.
+
+## General DTB interface
+
+Forward and inversion are independent selections:
+
+```bash
+PYTHONPATH=src $PY -m vbt.cli methods
+PYTHONPATH=src $PY -m vbt.cli audit-data
+PYTHONPATH=src $PY -m vbt.cli forward --profile default --subject sub-002
+PYTHONPATH=src $PY -m vbt.cli infer --profile default --inversion map --subject sub-001
+PYTHONPATH=src $PY -m vbt.cli infer --profile vep_25 --inversion nuts --subject sub-001
+```
+
+The two implemented inversion methods share one reduced-Epileptor Stan model:
+`map` is an L-BFGS point-estimate baseline; `nuts` produces posterior samples
+and must pass R-hat/ESS/BFMI/divergence/treedepth checks before scientific use.
+See `docs/general_dtb_baseline.md` for data-readiness gates.

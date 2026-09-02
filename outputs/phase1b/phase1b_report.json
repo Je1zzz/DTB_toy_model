@@ -6,6 +6,19 @@
   "period": 1.0,
   "noise": "colored additive ntau=1 seed=0 (not original seed)",
   "finite": true,
-  "duration": 10.0,
-  "diagnostics": []
+  "duration": 100.0,
+  "diagnostics": [
+    {
+      "time": 50.0,
+      "state_min": -11.069342601540024,
+      "state_max": 3.0231899998252123,
+      "max_abs": 11.069342601540024
+    },
+    {
+      "time": 100.0,
+      "state_min": -11.649562257052745,
+      "state_max": 3.0526816535467853,
+      "max_abs": 11.649562257052745
+    }
+  ]
 }

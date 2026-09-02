@@ -35,6 +35,7 @@ SCALAR_PARAMETERS = {"K_star", "amp_star", "log_eps_sq", "tau0_star"}
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--subject", default="sub-002")
+    parser.add_argument("--forward-profile", choices=("default", "vep_25"), default="default")
     parser.add_argument(
         "--dataset",
         type=Path,
@@ -61,6 +62,7 @@ def parse_args() -> argparse.Namespace:
         default=Path("/data_hdd/hmzhang/vbt_runtime/vbt_stan_prebuilt/5367ef4afb976271ecc6297b70a95dd3d944af61/vep_mcmc"),
     )
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--map-only", action="store_true", help="stop after best L-BFGS estimate")
     parser.add_argument("--blind-only", action="store_true", help="stop after truth-free prediction artifacts")
     parser.add_argument("--n-time", type=int, default=150)
     parser.add_argument("--opt-iter", type=int, default=2000)
@@ -265,6 +267,7 @@ def load_ground_truth(path: Path, labels: list[str]) -> tuple[np.ndarray, list[s
 
 
 def main() -> int:
+    wall_start = time.perf_counter()
     args = parse_args()
     subject = args.subject
     output = args.output or args.repo / "results/vep_cohort_e2e" / subject
@@ -285,8 +288,10 @@ def main() -> int:
     if len(seizure_vhdrs) != 1:
         raise ValueError(f"Expected one VEP-hypothesis run-01 seizure, found {seizure_vhdrs}")
     seizure_vhdr = seizure_vhdrs[0]
+    discovered_at = time.perf_counter()
 
     raw, sfreq, channel_names = read_brainvision(seizure_vhdr)
+    seeg_loaded_at = time.perf_counter()
     electrodes_path=args.electrodes or subject_dir / f"{subject}_electrodes.tsv"
     gain_path=args.gain or struct_dir / f"{subject}_gain.txt"
     sc_path=args.sc or struct_dir / f"{subject}_connectome.zip"
@@ -303,9 +308,12 @@ def main() -> int:
         labels.index("Right-Cerebellar-cortex"),
     ]
     gain[:, cerebellar] = gain.min()
+    anatomy_loaded_at = time.perf_counter()
     obs = log_power_features(raw, sfreq, args.n_time)
+    features_at = time.perf_counter()
     _, _, vh = np.linalg.svd(gain, full_matrices=True)
     eig = vh.T
+    basis_at = time.perf_counter()
     if not all(np.isfinite(item).all() for item in (raw, gain, sc, obs, eig)):
         raise ValueError("Non-finite input detected")
     if not np.all(obs > 0):
@@ -335,6 +343,7 @@ def main() -> int:
         eig=eig,
         roi_names=np.asarray(labels),
     )
+    serialized_at = time.perf_counter()
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
     seconds = np.arange(raw.shape[0]) / sfreq
@@ -351,6 +360,7 @@ def main() -> int:
     fig.colorbar(image, ax=axes[1, 1])
     fig.savefig(output / "input_qc.png", dpi=150)
     plt.close(fig)
+    qc_at = time.perf_counter()
 
     task_counts = {
         task: sum(task in path.name for path in vhdrs)
@@ -373,10 +383,21 @@ def main() -> int:
         "cerebellar_gain_columns_suppressed": cerebellar,
         "strictly_positive_Obs": bool(np.all(obs > 0)),
         "finite_inputs": True,
+        "stage_timing_seconds": {
+            "input_discovery": discovered_at - wall_start,
+            "seeg_read": seeg_loaded_at - discovered_at,
+            "electrodes_gain_sc_and_bipolarization": anatomy_loaded_at - seeg_loaded_at,
+            "seeg_log_power_features": features_at - anatomy_loaded_at,
+            "gain_svd_basis": basis_at - features_at,
+            "stan_and_npz_serialization": serialized_at - basis_at,
+            "input_qc_render": qc_at - serialized_at,
+            "preflight_hashes_and_manifest": time.perf_counter() - qc_at,
+        },
     }
     (output / "preflight.json").write_text(
         json.dumps(preflight, indent=2, ensure_ascii=False), encoding="utf-8"
     )
+    prepared_at = time.perf_counter()
 
     if args.prepare_only:
         print(json.dumps(preflight, indent=2, ensure_ascii=False))
@@ -386,6 +407,9 @@ def main() -> int:
     if not binary.exists():
         raise FileNotFoundError(f"Stan executable is absent: {binary}")
     env = os.environ.copy()
+    legacy_tbb = Path("/data_hdd/hmzhang/vbt_ins_runtime/lib/usr/lib/x86_64-linux-gnu")
+    if legacy_tbb.is_dir():
+        env["LD_LIBRARY_PATH"] = str(legacy_tbb) + (":" + env["LD_LIBRARY_PATH"] if env.get("LD_LIBRARY_PATH") else "")
     started = time.time()
 
     optimize_jobs = []
@@ -415,6 +439,7 @@ def main() -> int:
         return index,csv_path,code
     with ThreadPoolExecutor(max_workers=args.max_parallel) as pool:
         completed=list(pool.map(execute,optimize_jobs))
+    optimized_at = time.perf_counter()
     optimize_results=[]
     for start, optimize_csv, return_code in completed:
         result = {"start": start, "return_code": return_code, "lp": None}
@@ -430,6 +455,31 @@ def main() -> int:
         raise RuntimeError(f"All optimizations failed: {optimize_results}")
     best_optimizations = sorted(valid_optimizations, key=lambda item: item["lp"], reverse=True)[:args.best_inits]
     best_optimization = best_optimizations[0]
+
+    if args.map_only:
+        best_csv = output / f"optimize-{best_optimization['start']}.csv"
+        header, rows = csv_header_and_rows(best_csv)
+        row = rows[-1]
+        x0_columns = [header.index(f"x0.{index}") for index in range(1, 163)]
+        map_x0 = row[x0_columns]
+        prediction = pd.DataFrame({
+            "roi_index": np.arange(162), "roi_name": labels,
+            "map_x0": map_x0,
+        })
+        prediction["rank"] = prediction["map_x0"].rank(method="first", ascending=False).astype(int)
+        prediction.sort_values("rank").to_csv(output / "prediction_map.csv", index=False)
+        report = {
+            "method": "map", "engineering_status": "PASS",
+            "forward_profile": args.forward_profile, "inverse_model": "vep_reduced_2d",
+            "scientific_status": "POINT_ESTIMATE_ONLY_NOT_POSTERIOR",
+            "best_start": best_optimization["start"], "best_lp": best_optimization["lp"],
+            "optimizations_attempted": args.opt_starts, "optimizations_usable": len(valid_optimizations),
+            "EV_status": "UNAVAILABLE_NO_POSTERIOR_SOURCE_TRAJECTORY",
+            "timing_seconds": {"data_and_features": prepared_at-wall_start, "optimization": optimized_at-prepared_at, "total": time.perf_counter()-wall_start},
+        }
+        (output / "map_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(json.dumps(report, indent=2))
+        return 0
 
     chain_init_files = []
     for chain in range(1, args.chains + 1):
@@ -468,6 +518,7 @@ def main() -> int:
         sample_jobs.append((chain,csv_path,log_path,command))
     with ThreadPoolExecutor(max_workers=args.max_parallel) as pool:
         sample_completed=list(pool.map(execute,sample_jobs))
+    sampled_at = time.perf_counter()
     return_codes={str(chain):code for chain,_,code in sample_completed}
     if any(return_codes.values()):
         raise RuntimeError(f"Sampling failed: {return_codes}")
@@ -522,6 +573,9 @@ def main() -> int:
     prediction.to_csv(output / "prediction.csv", index=False)
     blind_metadata = {
         "subject": subject,
+        "forward_profile": args.forward_profile,
+        "inverse_model": "vep_reduced_2d",
+        "inversion_method": "nuts",
         "created_before_ground_truth_load": True,
         "EZN_rule": "rank by posterior mean x0; larger is more epileptogenic",
         "top_10_roi_names": prediction.head(10)["roi_name"].tolist(),
@@ -536,7 +590,14 @@ def main() -> int:
     )
 
     if args.blind_only:
-        report={"engineering_status":"PASS","subject":subject,"truth_loaded":False,"optimizations_attempted":args.opt_starts,"optimizations_usable":len(valid_optimizations),"chains":args.chains,"chain_return_codes":return_codes,"rhat_x0_max":float(np.nanmax(x0_rhat)),"diagnostics":diagnostics}
+        quality_pass = (
+            np.nanmax(x0_rhat) < 1.05
+            and sum(item["divergences"] for item in diagnostics) == 0
+            and sum(item["max_treedepth_hits"] for item in diagnostics) / (args.chains * args.samples) < 0.01
+            and min(item["bfmi"] for item in diagnostics) >= 0.3
+            and sum(item["rejected_nan_proposals"] for item in diagnostics) == 0
+        )
+        report={"engineering_status":"PASS","inference_quality_status":"PASS" if quality_pass else "FAIL_DIAGNOSTICS","forward_profile":args.forward_profile,"inverse_model":"vep_reduced_2d","inversion_method":"nuts","EV_status":"UNAVAILABLE_POSTERIOR_SOURCE_REPLAY_NOT_EXPORTED","subject":subject,"truth_loaded":False,"optimizations_attempted":args.opt_starts,"optimizations_usable":len(valid_optimizations),"chains":args.chains,"chain_return_codes":return_codes,"rhat_x0_max":float(np.nanmax(x0_rhat)),"diagnostics":diagnostics,"timing_seconds":{"data_and_features":prepared_at-wall_start,"optimization":optimized_at-prepared_at,"sampling":sampled_at-optimized_at,"postprocess":time.perf_counter()-sampled_at,"total":time.perf_counter()-wall_start}}
         (output/"blind_run_report.json").write_text(json.dumps(report,indent=2),encoding="utf-8")
         print(json.dumps(report,indent=2)); return 0
 

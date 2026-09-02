@@ -1,0 +1,63 @@
+{
+  "subjects": 30,
+  "config": {
+    "jobs": 4,
+    "opt_starts": 2,
+    "opt_iter": 50
+  },
+  "metrics": [
+    {
+      "method": "loo_ez_frequency",
+      "auroc_mean": 0.6689402549084373,
+      "average_precision_mean": 0.22466910954484748,
+      "first_ez_rank_mean": 24.4,
+      "oracle_k_recall_mean": 0.18691557954715854
+    },
+    {
+      "method": "loo_mean_map",
+      "auroc_mean": 0.5445217499002745,
+      "average_precision_mean": 0.09363812498419292,
+      "first_ez_rank_mean": 37.5,
+      "oracle_k_recall_mean": 0.07170249341301974
+    },
+    {
+      "method": "personalized_map",
+      "auroc_mean": 0.42919639031329243,
+      "average_precision_mean": 0.22552441036637239,
+      "first_ez_rank_mean": 43.9,
+      "oracle_k_recall_mean": 0.18496947496947497
+    }
+  ],
+  "paired_statistics": [
+    {
+      "comparison": "personalized_map-minus-loo_mean_map",
+      "mean_delta_auroc": -0.11532535958698194,
+      "median_delta_auroc": -0.23781947915826818,
+      "bootstrap_95ci": [
+        -0.279478077694051,
+        0.061058534461982394
+      ],
+      "sign_flip_p_two_sided": 0.1977802219778022
+    },
+    {
+      "comparison": "personalized_map-minus-loo_ez_frequency",
+      "mean_delta_auroc": -0.23974386459514496,
+      "median_delta_auroc": -0.2574816561844864,
+      "bootstrap_95ci": [
+        -0.3790582381896184,
+        -0.09529515328004654
+      ],
+      "sign_flip_p_two_sided": 0.0023997600239976003
+    }
+  ],
+  "timing_seconds": {
+    "cohort_wall_current_command": 0.2997689610347152,
+    "fresh_parallel_wall_estimate_from_artifacts": 478.3360717924079,
+    "artifact_completion_span": 419.80246210098267,
+    "per_subject_total_mean": 57.63894084051717,
+    "per_subject_total_median": 58.53360969142523,
+    "data_features_mean": 2.3608680659284196,
+    "optimization_mean": 55.02207014572341
+  },
+  "claim": "synthetic cohort MAP benchmark; not clinical validation"
+}

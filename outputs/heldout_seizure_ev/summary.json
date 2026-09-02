@@ -1,0 +1,16 @@
+{
+  "eligible_subjects": 17,
+  "heldout_recordings": 23,
+  "incompatible_recordings": 0,
+  "heldout_ev_mean_subject": 0.13747481056474375,
+  "heldout_ev_median_subject": 0.10217150346746473,
+  "heldout_ev_positive_subjects": 12,
+  "heldout_pearson_mean_subject": 0.6741745332388742,
+  "fit_channel_coverage_mean": 0.942802387793647,
+  "contract": "fit run excluded; later VEPhypothesis synthetic seizure only; named-channel intersection; shared initial time bins; no refitting",
+  "scope": "synthetic held-out-recording generalization, not clinical validation",
+  "incompatible": [],
+  "timing_seconds": {
+    "wall": 8.142593591008335
+  }
+}

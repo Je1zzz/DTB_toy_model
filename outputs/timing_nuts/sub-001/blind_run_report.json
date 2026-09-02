@@ -1,0 +1,45 @@
+{
+  "engineering_status": "PASS",
+  "inference_quality_status": "FAIL_DIAGNOSTICS",
+  "forward_profile": "default",
+  "inverse_model": "vep_reduced_2d",
+  "inversion_method": "nuts",
+  "EV_status": "UNAVAILABLE_POSTERIOR_SOURCE_REPLAY_NOT_EXPORTED",
+  "subject": "sub-001",
+  "truth_loaded": false,
+  "optimizations_attempted": 2,
+  "optimizations_usable": 2,
+  "chains": 2,
+  "chain_return_codes": {
+    "1": 0,
+    "2": 0
+  },
+  "rhat_x0_max": 3.8798872577101946,
+  "diagnostics": [
+    {
+      "chain": 1,
+      "draws": 5,
+      "divergences": 0,
+      "max_treedepth_hits": 5,
+      "mean_accept_stat": 0.6354810000000001,
+      "bfmi": 0.7741661733820228,
+      "rejected_nan_proposals": 1
+    },
+    {
+      "chain": 2,
+      "draws": 5,
+      "divergences": 2,
+      "max_treedepth_hits": 3,
+      "mean_accept_stat": 0.740533,
+      "bfmi": 0.9642685014314286,
+      "rejected_nan_proposals": 1
+    }
+  ],
+  "timing_seconds": {
+    "data_and_features": 1.933417356107384,
+    "optimization": 28.578572249040008,
+    "sampling": 298.3079718458466,
+    "postprocess": 0.30643698503263295,
+    "total": 329.1263993510511
+  }
+}

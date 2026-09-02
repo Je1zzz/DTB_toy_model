@@ -1,0 +1,49 @@
+{
+  "subjects": 14,
+  "recordings_policy": "lexicographically first valid VEP-hypothesis stimulation recording per subject",
+  "response_window": "500 model-time units before/after onset",
+  "endpoint": "peak absolute source response above median pre-stim baseline; AUROC vs synthetic EZ",
+  "metrics": {
+    "source_response_auroc": {
+      "mean": 0.4350171861072568,
+      "median": 0.4314980158730159,
+      "min": 0.0,
+      "max": 0.8670886075949367
+    },
+    "source_response_ap": {
+      "mean": 0.09905111419716801,
+      "median": 0.05046141817228221,
+      "min": 0.006172839506172839,
+      "max": 0.3562192118226601
+    },
+    "first_ez_rank": {
+      "mean": 48.42857142857143,
+      "median": 21.0,
+      "min": 1.0,
+      "max": 162.0
+    },
+    "oracle_k_recall": {
+      "mean": 0.07952470461868957,
+      "median": 0.0,
+      "min": 0.0,
+      "max": 0.2857142857142857
+    },
+    "ez_target_engagement": {
+      "mean": 0.1788754000419781,
+      "median": 0.17435377792724616,
+      "min": 0.007950744559259912,
+      "max": 0.4228171020031691
+    },
+    "mean_sensor_rms_delta": {
+      "mean": 228009.06221163957,
+      "median": 212231.76310552732,
+      "min": 193456.54457504262,
+      "max": 298413.36884914065
+    }
+  },
+  "timing_seconds": {
+    "per_subject_mean": 0.4250656626619665,
+    "cohort_wall": 6.030706680845469
+  },
+  "claim": "provided synthetic stimulation response characterization; not optimization or therapeutic efficacy"
+}

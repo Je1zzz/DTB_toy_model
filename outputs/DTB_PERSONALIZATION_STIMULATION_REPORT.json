@@ -1,0 +1,368 @@
+{
+  "data_scope": {
+    "subjects": 30,
+    "synthetic_seeg_not_clinical": true,
+    "seizure_subjects": 30,
+    "seizure_recordings": 53,
+    "interictal_subjects": 30,
+    "stimulation_subjects": 14,
+    "stimulation_recordings": 16
+  },
+  "result_1_inferred_personalization": {
+    "finding": "short MAP personalization did not outperform population controls",
+    "metrics": [
+      {
+        "method": "loo_ez_frequency",
+        "auroc_mean": 0.6689402549084373,
+        "average_precision_mean": 0.22466910954484748,
+        "first_ez_rank_mean": 24.4,
+        "oracle_k_recall_mean": 0.18691557954715854
+      },
+      {
+        "method": "loo_mean_map",
+        "auroc_mean": 0.5445217499002745,
+        "average_precision_mean": 0.09363812498419292,
+        "first_ez_rank_mean": 37.5,
+        "oracle_k_recall_mean": 0.07170249341301974
+      },
+      {
+        "method": "personalized_map",
+        "auroc_mean": 0.42919639031329243,
+        "average_precision_mean": 0.22552441036637239,
+        "first_ez_rank_mean": 43.9,
+        "oracle_k_recall_mean": 0.18496947496947497
+      }
+    ],
+    "paired_statistics": [
+      {
+        "comparison": "personalized_map-minus-loo_mean_map",
+        "mean_delta_auroc": -0.11532535958698194,
+        "median_delta_auroc": -0.23781947915826818,
+        "bootstrap_95ci": [
+          -0.279478077694051,
+          0.061058534461982394
+        ],
+        "sign_flip_p_two_sided": 0.1977802219778022
+      },
+      {
+        "comparison": "personalized_map-minus-loo_ez_frequency",
+        "mean_delta_auroc": -0.23974386459514496,
+        "median_delta_auroc": -0.2574816561844864,
+        "bootstrap_95ci": [
+          -0.3790582381896184,
+          -0.09529515328004654
+        ],
+        "sign_flip_p_two_sided": 0.0023997600239976003
+      }
+    ],
+    "timing_seconds": {
+      "cohort_wall_current_command": 0.2997689610347152,
+      "fresh_parallel_wall_estimate_from_artifacts": 478.3360717924079,
+      "artifact_completion_span": 419.80246210098267,
+      "per_subject_total_mean": 57.63894084051717,
+      "per_subject_total_median": 58.53360969142523,
+      "data_features_mean": 2.3608680659284196,
+      "optimization_mean": 55.02207014572341
+    },
+    "interpretation": "direct motivation to improve personalization/inversion; not evidence that personalization is unnecessary"
+  },
+  "inversion_timing_example": {
+    "map_30_subject_summary": {
+      "cohort_wall_current_command": 0.2997689610347152,
+      "fresh_parallel_wall_estimate_from_artifacts": 478.3360717924079,
+      "artifact_completion_span": 419.80246210098267,
+      "per_subject_total_mean": 57.63894084051717,
+      "per_subject_total_median": 58.53360969142523,
+      "data_features_mean": 2.3608680659284196,
+      "optimization_mean": 55.02207014572341
+    },
+    "nuts_sub001_smoke": {
+      "data_and_features": 1.933417356107384,
+      "optimization": 28.578572249040008,
+      "sampling": 298.3079718458466,
+      "postprocess": 0.30643698503263295,
+      "total": 329.1263993510511
+    },
+    "nuts_engineering_status": "PASS",
+    "nuts_inference_quality_status": "FAIL_DIAGNOSTICS",
+    "nuts_rhat_x0_max": 3.8798872577101946
+  },
+  "result_2_existing_stimulation": {
+    "finding": "provided synthetic stimulation responses were weakly EZ-selective on average",
+    "metrics": {
+      "source_response_auroc": {
+        "mean": 0.4350171861072568,
+        "median": 0.4314980158730159,
+        "min": 0.0,
+        "max": 0.8670886075949367
+      },
+      "source_response_ap": {
+        "mean": 0.09905111419716801,
+        "median": 0.05046141817228221,
+        "min": 0.006172839506172839,
+        "max": 0.3562192118226601
+      },
+      "first_ez_rank": {
+        "mean": 48.42857142857143,
+        "median": 21.0,
+        "min": 1.0,
+        "max": 162.0
+      },
+      "oracle_k_recall": {
+        "mean": 0.07952470461868957,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.2857142857142857
+      },
+      "ez_target_engagement": {
+        "mean": 0.1788754000419781,
+        "median": 0.17435377792724616,
+        "min": 0.007950744559259912,
+        "max": 0.4228171020031691
+      },
+      "mean_sensor_rms_delta": {
+        "mean": 228009.06221163957,
+        "median": 212231.76310552732,
+        "min": 193456.54457504262,
+        "max": 298413.36884914065
+      }
+    },
+    "timing_seconds": {
+      "per_subject_mean": 0.4250656626619665,
+      "cohort_wall": 6.030706680845469
+    }
+  },
+  "result_3_location_geometry": {
+    "finding": "candidate site strongly changes anatomical EZ engagement",
+    "evidence": {
+      "subjects": 14,
+      "candidate_actions": 1507,
+      "provided_found": 14,
+      "oracle_ez_engagement_mean": 0.7091120473363945,
+      "provided_ez_engagement_mean": 0.24295669877126147,
+      "random_median_ez_engagement_mean": 0.0741996147815642,
+      "oracle_minus_random_mean": 0.6349124325548303,
+      "oracle_minus_random_bootstrap_95ci": [
+        0.5607430627697776,
+        0.702040274892576
+      ],
+      "exact_sign_flip_p": 0.0001220703125,
+      "timing_seconds": {
+        "total": 0.9763491270132363
+      },
+      "scope": "geometry-only policy validation; counterfactual response forward simulation still required before calling this next-stimulation optimization"
+    }
+  },
+  "result_4_counterfactual_location": {
+    "finding": "at matched synthetic dose, oracle EZ-aware location improved EZ-selective response relative to random locations",
+    "policy_response_auroc_mean": {
+      "inferred": 0.35480805361107187,
+      "oracle": 0.7287756133759238,
+      "provided": 0.6255899094556766,
+      "random": 0.47606967938650985
+    },
+    "statistics": [
+      {
+        "comparison": "oracle-minus-random_median",
+        "mean_delta_auroc": 0.25270593398941393,
+        "median_delta_auroc": 0.09650621118012426,
+        "bootstrap_95ci": [
+          0.07370225543269643,
+          0.44389069174679535
+        ],
+        "exact_sign_flip_p_two_sided": 0.02294921875,
+        "subjects_better": 11
+      },
+      {
+        "comparison": "provided-minus-random_median",
+        "mean_delta_auroc": 0.14952023006916676,
+        "median_delta_auroc": 0.06548838865371676,
+        "bootstrap_95ci": [
+          -0.03191231179760624,
+          0.3344184494405331
+        ],
+        "exact_sign_flip_p_two_sided": 0.1455078125,
+        "subjects_better": 9
+      },
+      {
+        "comparison": "inferred-minus-random_median",
+        "mean_delta_auroc": -0.1212616257754379,
+        "median_delta_auroc": -0.12377161949685542,
+        "bootstrap_95ci": [
+          -0.3524105310904827,
+          0.1297020816893897
+        ],
+        "exact_sign_flip_p_two_sided": 0.371337890625,
+        "subjects_better": 4
+      }
+    ],
+    "timing_seconds": {
+      "wall": 292.15631851903163,
+      "per_subject_mean": 20.864843977781543
+    },
+    "scope": "synthetic diagnostic stimulation; location-only matched-dose counterfactual, not therapeutic suppression"
+  },
+  "result_5_oracle_personalization_ablation": {
+    "subjects": 30,
+    "duration": 4500.0,
+    "endpoint": "early-recruitment Jaccard@20 against provided synthetic source; secondary onset-rank Spearman",
+    "arms": [
+      {
+        "arm": "DYN_ONLY",
+        "jaccard_mean": 0.163926495915571,
+        "jaccard_median": 0.15966386554621848,
+        "spearman_mean": 0.16550519601645816,
+        "time_mean_s": 339.6044862735551
+      },
+      {
+        "arm": "FULL",
+        "jaccard_mean": 0.163926495915571,
+        "jaccard_median": 0.15966386554621848,
+        "spearman_mean": 0.1654656864547657,
+        "time_mean_s": 342.14522682656536
+      },
+      {
+        "arm": "MISMATCHED",
+        "jaccard_mean": 0.15179034082525636,
+        "jaccard_median": 0.14285714285714285,
+        "spearman_mean": 0.0176703245436349,
+        "time_mean_s": 339.83182647985717
+      },
+      {
+        "arm": "POP",
+        "jaccard_mean": 0.15625873240281982,
+        "jaccard_median": 0.12698412698412698,
+        "spearman_mean": NaN,
+        "time_mean_s": 343.3135621146299
+      },
+      {
+        "arm": "SC_ONLY",
+        "jaccard_mean": 0.15625873240281982,
+        "jaccard_median": 0.12698412698412698,
+        "spearman_mean": NaN,
+        "time_mean_s": 332.464428685753
+      }
+    ],
+    "comparisons": [
+      {
+        "comparison": "FULL-minus-SC_ONLY",
+        "mean_delta": 0.007667763512751236,
+        "bootstrap_95ci": [
+          -0.00026109437874143813,
+          0.01649082830624413
+        ],
+        "sign_flip_p": 0.07529247075292471
+      },
+      {
+        "comparison": "FULL-minus-DYN_ONLY",
+        "mean_delta": 0.0,
+        "bootstrap_95ci": [
+          0.0,
+          0.0
+        ],
+        "sign_flip_p": 1.0
+      },
+      {
+        "comparison": "FULL-minus-POP",
+        "mean_delta": 0.007667763512751236,
+        "bootstrap_95ci": [
+          -0.000358357633899431,
+          0.016282257585236125
+        ],
+        "sign_flip_p": 0.0842915708429157
+      },
+      {
+        "comparison": "FULL-minus-MISMATCHED",
+        "mean_delta": 0.01213615509031468,
+        "bootstrap_95ci": [
+          0.004932287426148854,
+          0.020093894507174474
+        ],
+        "sign_flip_p": 0.004199580041995801
+      }
+    ],
+    "timing_seconds": {
+      "wall": 13096.7411046559
+    },
+    "scope": "oracle synthetic personalization value; original RNG/trajectory not reproduced"
+  },
+  "result_6_replay_ev": {
+    "in_sample": {
+      "feature_space": "log(positive SEEG log-power features) used by reference_vep_mcmc.stan likelihood",
+      "endpoint": "EV = 1 - SSE(predicted feature, observed feature) / SST(observed feature)",
+      "map_subjects": 30,
+      "map_ev_mean": 0.6225967709801399,
+      "map_ev_median": 0.5994661983574594,
+      "map_ev_positive_subjects": 30,
+      "nuts_smoke": [
+        {
+          "subject": "sub-001",
+          "method": "nuts_smoke",
+          "draws": 10,
+          "ev_mean": 0.40416298989877286,
+          "ev_median": 0.375001794468852,
+          "ev_min": 0.33299139653183163,
+          "ev_max": 0.5573578653083698,
+          "posterior_mean_prediction_ev": 0.5143003302349232,
+          "posterior_mean_prediction_pearson": 0.7312604739489215
+        }
+      ],
+      "gate": "DESCRIPTIVE_ONLY until inversion diagnostics and held-out prediction pass",
+      "not_raw_seeg_ev": true,
+      "timing_seconds": {
+        "wall": 569.0745368760545
+      }
+    },
+    "heldout_synthetic_seizures": {
+      "eligible_subjects": 17,
+      "heldout_recordings": 23,
+      "incompatible_recordings": 0,
+      "heldout_ev_mean_subject": 0.13747481056474375,
+      "heldout_ev_median_subject": 0.10217150346746473,
+      "heldout_ev_positive_subjects": 12,
+      "heldout_pearson_mean_subject": 0.6741745332388742,
+      "fit_channel_coverage_mean": 0.942802387793647,
+      "contract": "fit run excluded; later VEPhypothesis synthetic seizure only; named-channel intersection; shared initial time bins; no refitting",
+      "scope": "synthetic held-out-recording generalization, not clinical validation",
+      "incompatible": [],
+      "timing_seconds": {
+        "wall": 8.142593591008335
+      }
+    }
+  },
+  "result_7_inferred_evn": {
+    "rule": "channel maximizing normalized gain engagement of top-10 MAP EZN regions; no EZ truth used for action selection",
+    "gate": "EXPLORATORY_FAIL_INVERSION_QUALITY",
+    "response_auroc_mean": 0.35480805361107187,
+    "paired_vs_random": {
+      "comparison": "inferred-minus-random_median",
+      "mean_delta_auroc": -0.1212616257754379,
+      "median_delta_auroc": -0.12377161949685542,
+      "bootstrap_95ci": [
+        -0.3524105310904827,
+        0.1297020816893897
+      ],
+      "exact_sign_flip_p_two_sided": 0.371337890625,
+      "subjects_better": 4
+    }
+  },
+  "why_personalization": {
+    "question": "Can subject-specific parameters beat population/default/mismatched twins and predict held-out recordings?",
+    "current_answer": "current short MAP has good in-sample feature EV but weak held-out EV and poor EZN localization; robust personalization and converged inversion remain necessary"
+  },
+  "why_next_stimulation": {
+    "question": "Does selecting location change EZN-selective response under matched dose?",
+    "current_answer": "yes for the synthetic oracle policy, but current inferred-EVN is worse than random on average and fails the inversion-quality gate"
+  },
+  "remaining_primary_experiments": [
+    "converged multi-chain Bayesian inversion",
+    "posterior predictive calibration on frozen held-out seizures",
+    "retest inferred-EVN only after inversion and EV gates pass"
+  ],
+  "forbidden_claims": [
+    "real clinical SEEG accuracy",
+    "therapeutic seizure suppression",
+    "clinical safety",
+    "clinically validated next stimulation"
+  ]
+}

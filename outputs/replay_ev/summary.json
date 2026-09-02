@@ -1,0 +1,26 @@
+{
+  "feature_space": "log(positive SEEG log-power features) used by reference_vep_mcmc.stan likelihood",
+  "endpoint": "EV = 1 - SSE(predicted feature, observed feature) / SST(observed feature)",
+  "map_subjects": 30,
+  "map_ev_mean": 0.6225967709801399,
+  "map_ev_median": 0.5994661983574594,
+  "map_ev_positive_subjects": 30,
+  "nuts_smoke": [
+    {
+      "subject": "sub-001",
+      "method": "nuts_smoke",
+      "draws": 10,
+      "ev_mean": 0.40416298989877286,
+      "ev_median": 0.375001794468852,
+      "ev_min": 0.33299139653183163,
+      "ev_max": 0.5573578653083698,
+      "posterior_mean_prediction_ev": 0.5143003302349232,
+      "posterior_mean_prediction_pearson": 0.7312604739489215
+    }
+  ],
+  "gate": "DESCRIPTIVE_ONLY until inversion diagnostics and held-out prediction pass",
+  "not_raw_seeg_ev": true,
+  "timing_seconds": {
+    "wall": 569.0745368760545
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "subjects": 14,
+  "candidate_actions": 1507,
+  "provided_found": 14,
+  "oracle_ez_engagement_mean": 0.7091120473363945,
+  "provided_ez_engagement_mean": 0.24295669877126147,
+  "random_median_ez_engagement_mean": 0.0741996147815642,
+  "oracle_minus_random_mean": 0.6349124325548303,
+  "oracle_minus_random_bootstrap_95ci": [
+    0.5607430627697776,
+    0.702040274892576
+  ],
+  "exact_sign_flip_p": 0.0001220703125,
+  "timing_seconds": {
+    "total": 0.9763491270132363
+  },
+  "scope": "geometry-only policy validation; counterfactual response forward simulation still required before calling this next-stimulation optimization"
+}
